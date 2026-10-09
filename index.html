@@ -111,6 +111,7 @@ details.letters[open] summary { margin-bottom: 12px; }
 .tile .ch { font-family: var(--display); font-size: 2.4rem; line-height: 1; color: var(--accent); }
 .tile .pos { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
 .tile .kw { font-weight: 600; font-size: 0.92rem; }
+.tile .role { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 .tile .desc { color: var(--muted); font-size: 0.85rem; overflow-wrap: anywhere; }
 .tile.empty .kw { color: var(--muted); font-weight: 400; font-style: italic; }
 
@@ -398,11 +399,21 @@ const ADJ = {
   S: "färgstark", T: "åsiktsstark", U: "inkännande", V: "anpassningsbar", X: "reserverad",
   Y: "pedagogisk", Z: "självsäker", "Å": "privat", "Ä": "iakttagande", "Ö": "vetgirig"
 };
+// Bokstävernas roller. Vokalerna styr: de påverkar grannarna eller arbetar medvetet och inåt.
+// Konsonanterna beskriver antingen en egenskap (vem man är) eller en handling (hur man gör).
+const VOWELS = ["A", "E", "I", "O", "U", "Y", "Å", "Ä", "Ö"];
+const ROLE = {
+  A: "påverkar", I: "påverkar", O: "påverkar",
+  E: "inre", U: "inre", Y: "inre", "Å": "inre", "Ä": "inre", "Ö": "inre",
+  B: "egenskap", C: "egenskap", G: "egenskap", K: "egenskap", P: "egenskap", S: "egenskap", X: "egenskap", Z: "egenskap",
+  D: "handling", F: "handling", H: "handling", J: "handling", L: "handling", M: "handling", N: "handling", Q: "handling", R: "handling", T: "handling", V: "handling", W: "handling"
+};
+const ROLE_LABEL = { "påverkar": "Vokal · påverkar grannarna", "inre": "Vokal · inre och medveten", "egenskap": "Konsonant · egenskap", "handling": "Konsonant · handling" };
 const IN_L = ["J", "Q", "U", "Ä", "Ö"], OUT_L = ["D", "H", "S", "Y", "Z", "O"], HIDE_L = ["A", "H", "X", "Å"];
 
 const SECTION_LABELS = {
   sammanfattning: "Sammanfattning", helhet: "Helhet", styrkor: "Styrkor", samverkan: "Hur bokstäverna samverkar",
-  balans: "Balans", spanningar: "Spänningar i namnet", efternamn: "Förnamn och efternamn",
+  uppbyggnad: "Namnets uppbyggnad", balans: "Balans", spanningar: "Spänningar i namnet", efternamn: "Förnamn och efternamn",
   moten: "I mötet med andra", dolt: "Det dolda och utmaningarna"
 };
 
@@ -501,6 +512,9 @@ function profile(str) {
   const all = words.flat();
   const W = {};
   words.forEach((w, wi) => w.forEach((l, i) => { W[l] = (W[l] || 0) + weightAt(wi, i, w.length); }));
+  // Dubbla bokstäver bredvid varandra förstärker extra.
+  const doubles = new Set();
+  words.forEach(w => w.forEach((l, i) => { if (i > 0 && w[i - 1] === l) { doubles.add(l); W[l] += 1; } }));
   const counts = {};
   all.forEach(l => counts[l] = (counts[l] || 0) + 1);
   const theme = {};
@@ -513,7 +527,7 @@ function profile(str) {
   Object.keys(counts).forEach(l => { if (counts[l] > 1) boosted.add(l); });
   const ranked = Object.keys(W).filter(l => bank(l)).sort((a, b) => (W[b] + (boosted.has(b) ? 1 : 0)) - (W[a] + (boosted.has(a) ? 1 : 0)));
   return {
-    words, all, W, counts, themes, boosted, ranked,
+    words, all, W, counts, themes, boosted, ranked, doubles,
     set: new Set(all),
     n: nameOf(words[0]),
     full: words.map(nameOf).join(" "),
@@ -567,7 +581,10 @@ function analyse(P) {
       rel.push(`A:et döljer ${prev} (${bank(prev).strength}). Det draget finns hos ${n}, men visas inte öppet och märks mest för dem som kommer nära.`);
     }
   }));
-  Object.entries(counts).filter(([l, c]) => c > 1 && l !== first && bank(l)).forEach(([l, c]) => {
+  P.doubles.forEach(l => {
+    if (bank(l)) rel.push(`${l}${l} står bredvid varandra. Dubbla bokstäver förstärker, så ${bank(l).strength} är extra stark hos ${n}.`);
+  });
+  Object.entries(counts).filter(([l, c]) => c > 1 && l !== first && !P.doubles.has(l) && bank(l)).forEach(([l, c]) => {
     rel.push(`${l} finns ${c === 2 ? "två" : c === 3 ? "tre" : c} gånger, vilket förstärker ${bank(l).strength}.`);
   });
   [
@@ -581,6 +598,27 @@ function analyse(P) {
     ["Ö", "M", "Ö:et samlar information och M:et bearbetar den. {n} bygger sina tankar på det hen har tagit in."]
   ].forEach(([a, b, t]) => { if (has(a) && has(b)) rel.push(fill(t, n)); });
   if (rel.length) out.push({ k: "samverkan", t: rel.join(" ") });
+
+  // Namnets uppbyggnad: vokaler som styr, konsonanter som egenskaper eller handlingar.
+  const pu = [];
+  const vow = all.filter(l => VOWELS.includes(l)), cons = all.filter(l => !VOWELS.includes(l));
+  const share = vow.length / all.length;
+  const mods = [...new Set(vow.filter(l => ROLE[l] === "påverkar"))], inner = [...new Set(vow.filter(l => ROLE[l] === "inre"))];
+  if (all.length >= 3) {
+    if (share >= 0.5) pu.push(`${n} har många vokaler (${vow.length} av ${all.length}). Vokalerna styr och arbetar inåt, så mycket hos ${n} sker under ytan och påverkar hur resten av personen kommer till uttryck.`);
+    else if (share <= 0.25) pu.push(`${n} har få vokaler (${vow.length} av ${all.length}). Personen beskrivs mest av sina konsonanter, alltså det som syns utåt i vem hen är och hur hen gör.`);
+    else pu.push(`${n} har en jämn blandning av vokaler (${vow.length}) och konsonanter (${cons.length}), alltså av det som styr inifrån och det som syns utåt.`);
+  }
+  if (mods.length) pu.push(`${joinList(mods)} påverkar sina grannar och formar hur bokstäverna runt omkring kommer fram.`);
+  if (inner.length) pu.push(`${joinList(inner)} står för det inre och medvetna hos ${n}.`);
+  const egen = cons.filter(l => ROLE[l] === "egenskap").length, hand = cons.filter(l => ROLE[l] === "handling").length;
+  if (egen + hand >= 2) {
+    if (egen > hand) pu.push(`Bland konsonanterna väger egenskaperna tyngst. ${n} beskrivs mer av vem hen är än av hur hen gör.`);
+    // Handlingsbokstäverna är vanligare i namn, så de behöver en tydlig övervikt för att räknas.
+    else if (hand >= 2 * egen + 2) pu.push(`Bland konsonanterna väger handlingarna tyngst. ${n} beskrivs mer av hur hen gör än av vem hen är.`);
+    else pu.push(`Bland konsonanterna finns både egenskaper och handlingar, så både vem ${n} är och hur hen gör syns tydligt.`);
+  }
+  if (pu.length) out.push({ k: "uppbyggnad", t: pu.join(" ") });
 
   // Balans
   const pb = [];
@@ -780,6 +818,7 @@ function renderAnalysisTab() {
       t.append(row, el("span", "kw", kw ? cap(kw) : "Ingen betydelse ännu"));
       if (desc) t.appendChild(el("span", "desc", desc));
       if (rel) t.appendChild(el("span", "desc", rel));
+      if (ROLE[l]) t.appendChild(el("span", "role", ROLE_LABEL[ROLE[l]]));
       grid.appendChild(t);
     });
     wd.appendChild(grid);
