@@ -12,7 +12,7 @@
 <title>Namnets bokstäver</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Runic&display=swap">
 <style>
 /* Layout: one column with tabs. Analys: name, summary card, analysis, letter tiles. Jämför: two names. Teorin: owner only. */
 :root {
@@ -132,6 +132,28 @@ button:hover { border-color: var(--accent); }
 button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .btns { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Fler teorier */
+.others { display: grid; gap: 16px; }
+.other-card { gap: 12px; }
+.other-card p { max-width: 65ch; }
+.other-card .calc { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); overflow-wrap: anywhere; }
+.other-card .arch { font-family: var(--display); font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.05; color: var(--accent); }
+.other-card .adj { font-weight: 600; }
+.nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 110px)); gap: 12px; }
+.num { display: grid; justify-items: center; gap: 6px; min-width: 0; }
+.num .big { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-size: 2.2rem; line-height: 1; }
+.num .cap { overflow-wrap: anywhere; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.scale { display: grid; gap: 4px; }
+.scale .track { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--accent-soft), var(--line), var(--accent-soft)); margin: 6px 8px; }
+.scale .dot { position: absolute; top: -5px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--surface); transform: translateX(-50%); }
+.scale .ends { display: flex; justify-content: space-between; gap: 12px; font-size: 0.8rem; color: var(--muted); }
+.runeline { font-family: "Noto Sans Runic", var(--body); font-size: clamp(2rem, 8vw, 2.8rem); color: var(--accent); letter-spacing: 0.08em; line-height: 1.2; overflow-wrap: anywhere; }
+.runes { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.rune { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: start; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.rune .glyph { grid-row: span 2; font-family: "Noto Sans Runic", var(--body); font-size: 2rem; line-height: 1; color: var(--accent); }
+.rune .rname { font-weight: 600; font-size: 0.92rem; }
+.rune .rdesc { color: var(--muted); font-size: 0.85rem; }
+
 /* Theory */
 .notice { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 0.92rem; }
 .notice[hidden] { display: none; }
@@ -186,6 +208,7 @@ td.kwcol { width: 35%; }
   <div class="tabs" role="tablist" data-i18n-aria="tabsAria" aria-label="Delar">
     <button class="tab" role="tab" id="tab-analys" aria-controls="panel-analys" aria-selected="true" type="button" data-i18n="tabAnalys">Analys</button>
     <button class="tab" role="tab" id="tab-jamfor" aria-controls="panel-jamfor" aria-selected="false" type="button" data-i18n="tabJamfor">Jämför</button>
+    <button class="tab" role="tab" id="tab-fler" aria-controls="panel-fler" aria-selected="false" type="button" data-i18n="tabFler">Fler teorier</button>
     <button class="tab" role="tab" id="tab-teori" aria-controls="panel-teori" aria-selected="false" type="button" hidden data-i18n="tabTeori">Teorin</button>
   </div>
 
@@ -221,6 +244,20 @@ td.kwcol { width: 35%; }
     <div class="toolbar">
       <button class="primary" id="copyCompare" type="button" data-i18n="copyCompare">Kopiera jämförelsen</button>
       <span class="status" id="copyCmpStatus"></span>
+    </div>
+  </section>
+
+  <!-- Fler teorier -->
+  <section class="panel" id="panel-fler" role="tabpanel" aria-labelledby="tab-fler" hidden>
+    <div class="ask">
+      <label class="label" for="otherName" data-i18n="nameLabel">Namn</label>
+      <input id="otherName" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh">
+    </div>
+    <p class="hint" data-i18n="otherIntro">Huvudanalysen bygger på appens egen teori.</p>
+    <div class="others" id="otherOut" aria-live="polite"></div>
+    <div class="toolbar">
+      <button class="primary" id="copyOther" type="button" data-i18n="copyOther">Kopiera</button>
+      <span class="status" id="copyOtherStatus"></span>
     </div>
   </section>
 
@@ -1054,7 +1091,7 @@ const UI = {
   sv: {
     docTitle: "Namnets bokstäver", kicker: "Namntolkning", title: "Namnets bokstäver",
     lede: "Varje bokstav i ett namn bär en betydelse. Skriv ett namn och se vad det säger om personen.",
-    tabsAria: "Delar", tabAnalys: "Analys", tabJamfor: "Jämför", tabTeori: "Teorin",
+    tabsAria: "Delar", tabAnalys: "Analys", tabJamfor: "Jämför", tabFler: "Fler teorier", otherIntro: "Huvudanalysen bygger på appens egen teori. Här tolkas samma namn med andra kända system, så att du kan jämföra vad de säger.", copyOther: "Kopiera", tabTeori: "Teorin",
     nameLabel: "Namn", namePh: "Skriv ett namn", copyAnalysis: "Kopiera analysen", letterByLetter: "Bokstav för bokstav",
     firstName: "Första namnet", secondName: "Andra namnet", copyCompare: "Kopiera jämförelsen",
     onlyYou: "Bara du ser den här fliken", answersTitle: "Svar från användarna",
@@ -1081,7 +1118,7 @@ const UI = {
   en: {
     docTitle: "Letters of the Name", kicker: "Name interpretation", title: "Letters of the Name",
     lede: "Every letter in a name carries a meaning. Type a name and see what it says about the person.",
-    tabsAria: "Sections", tabAnalys: "Analysis", tabJamfor: "Compare", tabTeori: "The theory",
+    tabsAria: "Sections", tabAnalys: "Analysis", tabJamfor: "Compare", tabFler: "More theories", otherIntro: "The main analysis is based on the app's own theory. Here the same name is read with other well-known systems, so you can compare what they say.", copyOther: "Copy", tabTeori: "The theory",
     nameLabel: "Name", namePh: "Type a name", copyAnalysis: "Copy the analysis", letterByLetter: "Letter by letter",
     firstName: "First name", secondName: "Second name", copyCompare: "Copy the comparison",
     onlyYou: "Only you can see this tab", answersTitle: "Answers from users",
@@ -1214,7 +1251,366 @@ function renderCompare() {
   });
 }
 
-function renderAll() { renderAnalysisTab(); renderCompare(); }
+// ---- Fler teorier: numerologi, ljudsymbolik och runor ----
+// Alla bygger på fasta regler. Å och Ä räknas som A och Ö som O där systemen saknar dem.
+function baseLetter(l) { return l === "Å" || l === "Ä" ? "A" : l === "Ö" ? "O" : l; }
+const pythValue = l => ((baseLetter(l).charCodeAt(0) - 65) % 9) + 1;
+const CHAL = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 8, G: 3, H: 5, I: 1, J: 1, K: 2, L: 3, M: 4, N: 5, O: 7, P: 8, Q: 1, R: 2, S: 3, T: 4, U: 6, V: 6, W: 6, X: 5, Y: 1, Z: 7 };
+const chalValue = l => CHAL[baseLetter(l)];
+function reduceNum(n, master) {
+  while (n > 9 && !(master && (n === 11 || n === 22 || n === 33))) n = String(n).split("").reduce((s, d) => s + +d, 0);
+  return n;
+}
+
+// Ljud: positivt = hårt/skarpt, negativt = mjukt/runt. Ljusa vokaler positiva, mörka negativa.
+const HARDNESS = { K: 1, T: 1, P: 1, C: 1, Q: 1, X: 1, Z: 0.5, S: 0.5, B: -0.5, D: -0.5, G: -0.5, J: -0.5, V: -0.5, W: -0.5, M: -1, N: -1, L: -1 };
+const BRIGHTNESS = { I: 1, E: 1, Y: 1, "Ä": 1, A: -1, O: -1, U: -1, "Å": -1 };
+const STOPS = ["K", "T", "P", "D", "G", "B", "C", "Q", "X"];
+
+// Den äldre futharken. Ätt 0 = Freys, 1 = Hagals, 2 = Tyrs.
+const RUNES = {
+  fehu: ["ᚠ", "Fehu", 0], uruz: ["ᚢ", "Uruz", 0], thurisaz: ["ᚦ", "Thurisaz", 0], ansuz: ["ᚨ", "Ansuz", 0],
+  raidho: ["ᚱ", "Raidho", 0], kenaz: ["ᚲ", "Kenaz", 0], gebo: ["ᚷ", "Gebo", 0], wunjo: ["ᚹ", "Wunjo", 0],
+  hagalaz: ["ᚺ", "Hagalaz", 1], naudiz: ["ᚾ", "Naudiz", 1], isa: ["ᛁ", "Isa", 1], jera: ["ᛃ", "Jera", 1],
+  eihwaz: ["ᛇ", "Eihwaz", 1], perthro: ["ᛈ", "Perthro", 1], algiz: ["ᛉ", "Algiz", 1], sowilo: ["ᛊ", "Sowilo", 1],
+  tiwaz: ["ᛏ", "Tiwaz", 2], berkano: ["ᛒ", "Berkano", 2], ehwaz: ["ᛖ", "Ehwaz", 2], mannaz: ["ᛗ", "Mannaz", 2],
+  laguz: ["ᛚ", "Laguz", 2], ingwaz: ["ᛜ", "Ingwaz", 2], dagaz: ["ᛞ", "Dagaz", 2], othala: ["ᛟ", "Othala", 2]
+};
+const LETTER_RUNE = {
+  A: ["ansuz"], B: ["berkano"], C: ["kenaz"], D: ["dagaz"], E: ["ehwaz"], F: ["fehu"], G: ["gebo"], H: ["hagalaz"],
+  I: ["isa"], J: ["jera"], K: ["kenaz"], L: ["laguz"], M: ["mannaz"], N: ["naudiz"], O: ["othala"], P: ["perthro"],
+  Q: ["kenaz"], R: ["raidho"], S: ["sowilo"], T: ["tiwaz"], U: ["uruz"], V: ["wunjo"], W: ["wunjo"], X: ["kenaz", "sowilo"],
+  Y: ["eihwaz"], Z: ["algiz"], "Å": ["othala"], "Ä": ["ehwaz"], "Ö": ["othala"]
+};
+// Bokstäver utan egen runa, som fått den som ligger närmast i ljud.
+const RUNE_APPROX = ["C", "Q", "Y", "Å", "Ä", "Ö"];
+function toRunes(w, approx) {
+  const out = [];
+  for (let i = 0; i < w.length; i++) {
+    const a = w[i], b = w[i + 1];
+    if (a === "T" && b === "H") { out.push("thurisaz"); i++; continue; }
+    if (a === "N" && b === "G") { out.push("ingwaz"); i++; continue; }
+    if (a === "C" && b === "K") { out.push("kenaz"); i++; continue; }
+    out.push(...(LETTER_RUNE[a] || []));
+    if (approx && RUNE_APPROX.includes(a)) approx.add(a);
+  }
+  return out;
+}
+
+const OTHER = {
+  sv: {
+    intro: "Huvudanalysen bygger på appens egen teori. Här tolkas samma namn med andra kända system, så att du kan jämföra vad de säger.",
+    numKicker: "Siffror · Pythagoreisk numerologi",
+    numHint: "Varje bokstav får en siffra från 1 till 9 i alfabetisk ordning. Summan räknas ner till en siffra, utom mästertalen 11, 22 och 33. Å och Ä räknas som A och Ö som O.",
+    numLabels: ["Namntal", "Själstal", "Personlighetstal"],
+    numName: (x, t) => `Namntalet ${x} kommer från alla bokstäver och visar vad hela namnet strävar mot. ${t}`,
+    numSoul: (x, t) => `Själstalet ${x} kommer från vokalerna och visar den inre drivkraften, det man längtar efter. ${t}`,
+    numPers: (x, t) => `Personlighetstalet ${x} kommer från konsonanterna och visar det första intrycket andra får. ${t}`,
+    NUM: {
+      1: "Ettan står för självständighet och initiativ. Den går gärna först, tar egna beslut och vill stå på egna ben. Utmaningen är att inte bli envis eller köra över andra.",
+      2: "Tvåan står för samarbete och lyhördhet. Den är diplomaten som känner av stämningar och för människor samman. Utmaningen är att våga ta plats och fatta beslut.",
+      3: "Trean står för uttryck och glädje. Den är kreativ, social och har lätt för att uttrycka sig. Utmaningen är att hålla fokus och inte sprida sig för tunt.",
+      4: "Fyran står för struktur och pålitlighet. Den bygger stabilt, steg för steg, och går att lita på. Utmaningen är att inte bli för stel eller fast i sina rutiner.",
+      5: "Femman står för frihet och förändring. Den är nyfiken, rörlig och älskar nya intryck. Utmaningen är rastlöshet och att ha svårt att stanna kvar.",
+      6: "Sexan står för omsorg och ansvar. Den tar hand om andra och vill skapa harmoni omkring sig. Utmaningen är att inte ta på sig för mycket ansvar för andra.",
+      7: "Sjuan står för eftertanke och sökande. Den är analytisk och söker en djupare förståelse, ofta på egen hand. Utmaningen är att inte stänga in sig.",
+      8: "Åttan står för ambition och styrka. Den har kraft och förmåga att leda och bygga något stort. Utmaningen är att inte låta arbete och kontroll ta över.",
+      9: "Nian står för medkänsla och helhet. Den är idealistisk, generös och ser det stora sammanhanget. Utmaningen är att inte glömma sig själv när den hjälper andra.",
+      11: "11 är ett mästertal som står för intuition och inspiration. Det ger en förmåga att inspirera andra, men också en känslighet som kan vara tung att bära.",
+      22: "22 är ett mästertal som kallas mästerbyggaren. Det står för förmågan att förverkliga stora idéer, men också för höga krav på sig själv.",
+      33: "33 är ett mästertal som kallas mästerläraren. Det står för omsorg och vägledning i stor skala, men också för risken att bära andras bördor."
+    },
+    chalKicker: "Siffror · Chaldeisk numerologi",
+    chalHint: "Ett äldre system från Babylonien. Bokstäverna får värden efter hur de låter, och siffran 9 ges inte till någon bokstav eftersom den räknades som helig.",
+    chalLabel: "Namntal",
+    PLANET: { 1: ["Solen", "vilja, ledarskap och utstrålning"], 2: ["Månen", "känslor, fantasi och samarbete"], 3: ["Jupiter", "optimism, tillväxt och kunskap"], 4: ["Uranus", "egna vägar, det oväntade och att ifrågasätta"], 5: ["Merkurius", "kommunikation, rörlighet och snabbhet"], 6: ["Venus", "kärlek, skönhet och harmoni"], 7: ["Neptunus", "intuition, drömmar och andlighet"], 8: ["Saturnus", "disciplin, tålamod och ansvar"], 9: ["Mars", "energi, mod och kampvilja"] },
+    chalText: (full, c, x, pl, kw) => `${full} får summan ${c}, som blir ${x}. I det chaldeiska systemet hör ${x} till ${pl} och står för ${kw}.`,
+    chalSame: x => `Båda systemen landar på ${x}, vilket brukar tolkas som att talet är extra starkt i namnet.`,
+    chalDiff: p => `Det pythagoreiska namntalet är ${p}, så de två systemen lyfter fram olika sidor av namnet.`,
+    soundKicker: "Ljud och intryck · Ljudsymbolik",
+    soundHint: "Ljudsymbolik är ett forskningsområde inom psykologi och språkvetenskap, känt från Bouba/Kiki-försöken. Det beskriver hur ljuden i ett namn brukar uppfattas av andra, inte hur personen är. Analysen gäller förnamnet och utgår från bokstäverna, så uttalet kan skilja sig något.",
+    scaleHard: ["Mjukt och runt", "Skarpt och kantigt"], scaleBright: ["Mörkt och tungt", "Ljust och lätt"],
+    IMPRESSION: {
+      sharpBright: ["Snabbt och skarpt", "pigg · vass · energisk"],
+      sharpDark: ["Kraftfullt", "stark · bestämd · tung"],
+      softBright: ["Lätt och vänligt", "mjuk · ljus · öppen"],
+      softDark: ["Lugnt och tryggt", "rund · varm · stadig"],
+      sharp: ["Skarpt och energiskt", "vass · pigg · bestämd"],
+      soft: ["Mjukt och varmt", "rund · varm · vänlig"],
+      bright: ["Ljust och lätt", "lätt · snabb · öppen"],
+      dark: ["Tungt och stadigt", "stor · stadig · trygg"],
+      balanced: ["Balanserat", "varken skarpt eller mjukt"]
+    },
+    hard: (n, ls) => `Konsonanterna i ${n} är mest hårda (${ls}). Hårda ljud uppfattas ofta som skarpa och energiska och förknippas med fart, skärpa och beslutsamhet.`,
+    soft: (n, ls) => `Konsonanterna i ${n} är mest mjuka (${ls}). Mjuka ljud uppfattas ofta som runda och varma och förknippas med lugn, närhet och vänlighet.`,
+    mixCons: n => `${n} blandar mjuka och hårda konsonanter, så namnet låter varken särskilt skarpt eller särskilt runt.`,
+    bright: (n, ls) => `Vokalerna är ljusa (${ls}). Ljusa vokaler brukar få saker att verka små, snabba och lätta, så ${n} ger ett piggt och lätt intryck.`,
+    dark: (n, ls) => `Vokalerna är mörka och öppna (${ls}). Sådana vokaler brukar få saker att verka större, tyngre och stabilare, så ${n} ger ett intryck av tyngd och trygghet.`,
+    mixVow: n => `Vokalerna i ${n} blandar ljust och mörkt, så namnet låter varken särskilt lätt eller särskilt tungt.`,
+    endVowel: (n, l) => `${n} slutar på vokalen ${l}, så namnet klingar ut mjukt och öppet.`,
+    endStop: (n, l) => `${n} slutar tvärt på ${l}, vilket ger ett bestämt och avslutat intryck.`,
+    endSoft: (n, l) => `${n} slutar på ${l}, ett ljud som klingar ut lugnt.`,
+    syll: (n, s) => s <= 1 ? `Med en stavelse är ${n} kort och slagkraftigt, lätt att ropa och lätt att minnas.` : s === 2 ? `Med två stavelser har ${n} den vanligaste längden för namn, med en tydlig och lättsam rytm.` : `Med ${s} stavelser är ${n} ett längre namn, och längre namn brukar uppfattas som mer melodiska och formella.`,
+    runeKicker: "Runorna · Nordisk runsymbolik",
+    runeHint: "Varje bokstav har fått den runa i den äldre futharken som motsvarar den. Runornas betydelser bygger på de gamla runpoemen och på moderna tolkningar.",
+    RUNE: {
+      fehu: ["välstånd", "Fehu betyder boskap, som förr var rikedom. Runan står för det man bygger upp och förtjänar, och för att dela med sig av det man har."],
+      uruz: ["urkraft", "Uruz är uroxen, ett vilt och starkt djur. Runan står för styrka, uthållighet och vilja."],
+      thurisaz: ["kraft och försvar", "Thurisaz är tursen, jätten, en rå kraft. Runan står för försvar, gränser och förmågan att stå emot."],
+      ansuz: ["ordet och visdomen", "Ansuz står för Oden och för ordet. Runan handlar om kommunikation, inspiration och visdom."],
+      raidho: ["resan", "Raidho är ritten eller resan. Runan står för rörelse, riktning och att följa sin egen väg i rätt takt."],
+      kenaz: ["facklan", "Kenaz är facklan som lyser upp. Runan står för kunskap, kreativitet och insikt."],
+      gebo: ["gåvan", "Gebo är gåvan. Runan står för utbyte, generositet och band mellan människor."],
+      wunjo: ["glädjen", "Wunjo är glädje. Runan står för gemenskap, harmoni och att känna sig hemma bland andra."],
+      hagalaz: ["haglet", "Hagalaz är haglet som slår ner. Runan står för omvälvningar som rensar och gör plats för något nytt."],
+      naudiz: ["nöden", "Naudiz är nöd och behov. Runan står för motstånd som formar, och för den inre styrka som växer ur svårigheter."],
+      isa: ["isen", "Isa är isen. Runan står för stillhet, fokus och att stå fast."],
+      jera: ["skörden", "Jera är året och skörden. Runan står för tålamod, och för att det man sår kommer tillbaka i sinom tid."],
+      eihwaz: ["idegranen", "Eihwaz är idegranen, ett träd som lever mycket länge. Runan står för uthållighet, skydd och förmågan att ta sig igenom förändringar."],
+      perthro: ["det dolda", "Perthro är en runa vars ursprungliga betydelse är osäker. Den tolkas oftast som ödet och det dolda, det som ännu inte har visat sig."],
+      algiz: ["skyddet", "Algiz tolkas som älgen eller skyddet. Runan står för beskydd, vaksamhet och känslan av att vara buren."],
+      sowilo: ["solen", "Sowilo är solen. Runan står för livskraft, framgång och klarhet."],
+      tiwaz: ["Tyr", "Tiwaz står för guden Tyr. Runan handlar om rättvisa, mod och att offra något för det som är rätt."],
+      berkano: ["björken", "Berkano är björken. Runan står för tillväxt, omsorg och nya början."],
+      ehwaz: ["hästen", "Ehwaz är hästen. Runan står för samarbete, tillit och att röra sig framåt tillsammans."],
+      mannaz: ["människan", "Mannaz är människan. Runan står för självinsikt, gemenskap och det mänskliga."],
+      laguz: ["vattnet", "Laguz är vattnet. Runan står för intuition, känslor och att följa med strömmen."],
+      ingwaz: ["Ing", "Ingwaz står för fruktbarhetsguden Ing. Runan handlar om inre växt och om att fullborda något."],
+      dagaz: ["dagen", "Dagaz är dagen och gryningen. Runan står för genombrott, uppvaknande och nya insikter."],
+      othala: ["arvet", "Othala är arvet och hemmet. Runan står för släkt, rötter och det man för vidare."]
+    },
+    AETT: [["Freys ätt", "skapande, glädje och det man bygger upp i livet"], ["Hagals ätt", "prövningar och krafter man inte styr över, och hur man växer genom dem"], ["Tyrs ätt", "människan, relationerna och den inre utvecklingen"]],
+    runeFirst: (n, g, name, kw, t) => `${n} börjar med ${g} ${name}, ${kw}, som ger namnet dess grundton. ${t}`,
+    runeRepeat: (name, c) => `${name} återkommer ${c === 2 ? "två" : c === 3 ? "tre" : c} gånger, så den runan väger extra tungt i namnet.`,
+    aettMain: (n, a, about) => `De flesta runorna i ${n} hör till ${a}, som handlar om ${about}.`,
+    aettMix: n => `Runorna i ${n} är spridda över flera ätter, så namnet rymmer både skapande, prövningar och relationer.`,
+    approx: ls => `${ls} saknar en egen runa, så ${ls.includes(" och ") ? "de" : "den"} har fått den runa som ligger närmast i ljud.`,
+    xNote: "X skrivs med två runor, Kenaz och Sowilo, eftersom det låter som K och S.",
+    copyOther: "Kopiera"
+  },
+  en: {
+    intro: "The main analysis is based on the app's own theory. Here the same name is read with other well-known systems, so you can compare what they say.",
+    numKicker: "Numbers · Pythagorean numerology",
+    numHint: "Each letter gets a number from 1 to 9 in alphabetical order. The sum is reduced to a single digit, except for the master numbers 11, 22 and 33. Å and Ä count as A and Ö as O.",
+    numLabels: ["Name number", "Soul number", "Personality number"],
+    numName: (x, t) => `The name number ${x} comes from all the letters and shows what the whole name strives towards. ${t}`,
+    numSoul: (x, t) => `The soul number ${x} comes from the vowels and shows the inner drive, what you long for. ${t}`,
+    numPers: (x, t) => `The personality number ${x} comes from the consonants and shows the first impression others get. ${t}`,
+    NUM: {
+      1: "The one stands for independence and initiative. It likes to go first, make its own decisions and stand on its own feet. The challenge is not to become stubborn or overrule others.",
+      2: "The two stands for cooperation and sensitivity. It is the diplomat who senses moods and brings people together. The challenge is daring to take up space and make decisions.",
+      3: "The three stands for expression and joy. It is creative, sociable and finds it easy to express itself. The challenge is staying focused and not spreading itself too thin.",
+      4: "The four stands for structure and reliability. It builds steadily, step by step, and can be relied on. The challenge is not to become too rigid or stuck in routines.",
+      5: "The five stands for freedom and change. It is curious, always on the move and loves new impressions. The challenge is restlessness and finding it hard to stay put.",
+      6: "The six stands for care and responsibility. It looks after others and wants to create harmony around it. The challenge is not to take on too much responsibility for others.",
+      7: "The seven stands for reflection and seeking. It is analytical and looks for a deeper understanding, often on its own. The challenge is not to shut itself away.",
+      8: "The eight stands for ambition and power. It has the strength and ability to lead and build something big. The challenge is not to let work and control take over.",
+      9: "The nine stands for compassion and the bigger picture. It is idealistic, generous and sees the whole. The challenge is not to forget itself while helping others.",
+      11: "11 is a master number that stands for intuition and inspiration. It brings an ability to inspire others, but also a sensitivity that can be heavy to carry.",
+      22: "22 is a master number known as the master builder. It stands for the ability to turn big ideas into reality, but also for high demands on oneself.",
+      33: "33 is a master number known as the master teacher. It stands for care and guidance on a large scale, but also for the risk of carrying other people's burdens."
+    },
+    chalKicker: "Numbers · Chaldean numerology",
+    chalHint: "An older system from Babylonia. Letters get their values from how they sound, and the number 9 is not given to any letter because it was considered sacred.",
+    chalLabel: "Name number",
+    PLANET: { 1: ["the Sun", "will, leadership and presence"], 2: ["the Moon", "emotions, imagination and cooperation"], 3: ["Jupiter", "optimism, growth and knowledge"], 4: ["Uranus", "going your own way, the unexpected and questioning"], 5: ["Mercury", "communication, mobility and speed"], 6: ["Venus", "love, beauty and harmony"], 7: ["Neptune", "intuition, dreams and spirituality"], 8: ["Saturn", "discipline, patience and responsibility"], 9: ["Mars", "energy, courage and fighting spirit"] },
+    chalText: (full, c, x, pl, kw) => `${full} adds up to ${c}, which becomes ${x}. In the Chaldean system, ${x} belongs to ${pl} and stands for ${kw}.`,
+    chalSame: x => `Both systems arrive at ${x}, which is usually read as the number being especially strong in the name.`,
+    chalDiff: p => `The Pythagorean name number is ${p}, so the two systems bring out different sides of the name.`,
+    soundKicker: "Sound and impression · Sound symbolism",
+    soundHint: "Sound symbolism is a research field in psychology and linguistics, known from the Bouba/Kiki experiments. It describes how the sounds in a name are usually perceived by others, not what the person is like. The analysis covers the first name and is based on the letters, so the actual pronunciation may differ a little.",
+    scaleHard: ["Soft and round", "Sharp and angular"], scaleBright: ["Dark and heavy", "Bright and light"],
+    IMPRESSION: {
+      sharpBright: ["Quick and sharp", "lively · sharp · energetic"],
+      sharpDark: ["Powerful", "strong · firm · weighty"],
+      softBright: ["Light and friendly", "soft · bright · open"],
+      softDark: ["Calm and secure", "round · warm · steady"],
+      sharp: ["Sharp and energetic", "sharp · lively · firm"],
+      soft: ["Soft and warm", "round · warm · friendly"],
+      bright: ["Bright and light", "light · quick · open"],
+      dark: ["Deep and steady", "big · steady · secure"],
+      balanced: ["Balanced", "neither sharp nor soft"]
+    },
+    hard: (n, ls) => `The consonants in ${n} are mostly hard (${ls}). Hard sounds are often perceived as sharp and energetic, and are associated with speed, sharpness and determination.`,
+    soft: (n, ls) => `The consonants in ${n} are mostly soft (${ls}). Soft sounds are often perceived as round and warm, and are associated with calm, closeness and kindness.`,
+    mixCons: n => `${n} mixes soft and hard consonants, so the name sounds neither especially sharp nor especially round.`,
+    bright: (n, ls) => `The vowels are bright (${ls}). Bright vowels tend to make things seem small, quick and light, so ${n} gives a lively and light impression.`,
+    dark: (n, ls) => `The vowels are dark and open (${ls}). Such vowels tend to make things seem bigger, heavier and more stable, so ${n} gives an impression of weight and security.`,
+    mixVow: n => `The vowels in ${n} mix bright and dark, so the name sounds neither especially light nor especially heavy.`,
+    endVowel: (n, l) => `${n} ends on the vowel ${l}, so the name fades out softly and openly.`,
+    endStop: (n, l) => `${n} ends abruptly on ${l}, which gives a firm and finished impression.`,
+    endSoft: (n, l) => `${n} ends on ${l}, a sound that fades out calmly.`,
+    syll: (n, s) => s <= 1 ? `With one syllable, ${n} is short and punchy, easy to call out and easy to remember.` : s === 2 ? `With two syllables, ${n} has the most common length for a name, with a clear and easy rhythm.` : `With ${s} syllables, ${n} is a longer name, and longer names tend to be perceived as more melodic and formal.`,
+    runeKicker: "The runes · Nordic rune symbolism",
+    runeHint: "Each letter has been given its matching rune in the Elder Futhark. The meanings of the runes are based on the old rune poems and on modern interpretations.",
+    RUNE: {
+      fehu: ["wealth", "Fehu means cattle, which once meant wealth. The rune stands for what you build up and earn, and for sharing what you have."],
+      uruz: ["primal strength", "Uruz is the aurochs, a wild and strong animal. The rune stands for strength, endurance and will."],
+      thurisaz: ["force and defence", "Thurisaz is the giant, a raw force. The rune stands for defence, boundaries and the ability to withstand."],
+      ansuz: ["word and wisdom", "Ansuz stands for Odin and for the spoken word. The rune is about communication, inspiration and wisdom."],
+      raidho: ["the journey", "Raidho is the ride or the journey. The rune stands for movement, direction and following your own path at the right pace."],
+      kenaz: ["the torch", "Kenaz is the torch that lights the way. The rune stands for knowledge, creativity and insight."],
+      gebo: ["the gift", "Gebo is the gift. The rune stands for exchange, generosity and the bonds between people."],
+      wunjo: ["joy", "Wunjo is joy. The rune stands for fellowship, harmony and feeling at home among others."],
+      hagalaz: ["hail", "Hagalaz is the hail that strikes. The rune stands for upheavals that clear the ground and make room for something new."],
+      naudiz: ["need", "Naudiz is need and hardship. The rune stands for resistance that shapes you, and the inner strength that grows out of difficulty."],
+      isa: ["ice", "Isa is ice. The rune stands for stillness, focus and standing firm."],
+      jera: ["the harvest", "Jera is the year and the harvest. The rune stands for patience, and for what you sow coming back in due time."],
+      eihwaz: ["the yew", "Eihwaz is the yew, a tree that lives for a very long time. The rune stands for endurance, protection and the ability to come through change."],
+      perthro: ["the hidden", "Perthro is a rune whose original meaning is uncertain. It is usually read as fate and the hidden, what has not yet been revealed."],
+      algiz: ["protection", "Algiz is read as the elk or as protection. The rune stands for shelter, alertness and the feeling of being carried."],
+      sowilo: ["the sun", "Sowilo is the sun. The rune stands for life force, success and clarity."],
+      tiwaz: ["Tyr", "Tiwaz stands for the god Tyr. The rune is about justice, courage and giving something up for what is right."],
+      berkano: ["the birch", "Berkano is the birch. The rune stands for growth, care and new beginnings."],
+      ehwaz: ["the horse", "Ehwaz is the horse. The rune stands for cooperation, trust and moving forward together."],
+      mannaz: ["humankind", "Mannaz is humankind. The rune stands for self-knowledge, community and what makes us human."],
+      laguz: ["water", "Laguz is water. The rune stands for intuition, emotions and going with the flow."],
+      ingwaz: ["Ing", "Ingwaz stands for Ing, a god of fertility. The rune is about inner growth and bringing something to completion."],
+      dagaz: ["the day", "Dagaz is the day and the dawn. The rune stands for breakthroughs, awakening and new insight."],
+      othala: ["heritage", "Othala is heritage and home. The rune stands for family, roots and what you pass on."]
+    },
+    AETT: [["Freyr's aett", "creation, joy and what you build up in life"], ["Hagal's aett", "trials and forces beyond your control, and how you grow through them"], ["Tyr's aett", "humankind, relationships and inner growth"]],
+    runeFirst: (n, g, name, kw, t) => `${n} begins with ${g} ${name}, ${kw}, which sets the keynote of the name. ${t}`,
+    runeRepeat: (name, c) => `${name} appears ${c === 2 ? "twice" : c === 3 ? "three times" : c + " times"}, so that rune carries extra weight in the name.`,
+    aettMain: (n, a, about) => `Most of the runes in ${n} belong to ${a}, which is about ${about}.`,
+    aettMix: n => `The runes in ${n} are spread over several aettir, so the name holds creation, trials and relationships alike.`,
+    approx: ls => `${ls} ${ls.includes(" and ") ? "have" : "has"} no rune of ${ls.includes(" and ") ? "their" : "its"} own, so the closest rune in sound has been used.`,
+    xNote: "X is written with two runes, Kenaz and Sowilo, since it sounds like K and S.",
+    copyOther: "Copy"
+  }
+};
+const O = () => OTHER[lang];
+
+// Räknar fram allt för fliken Fler teorier. Returnerar sektioner med rubrik, text och extra data för visningen.
+function otherTheories(P) {
+  const o = O(), n = P.n, all = P.all, fn = P.words[0];
+  const res = [];
+
+  // Pythagoreisk numerologi
+  const sum = ls => ls.reduce((s, l) => s + pythValue(l), 0);
+  const vow = all.filter(l => VOWELS.includes(l)), con = all.filter(l => !VOWELS.includes(l));
+  const nums = [reduceNum(sum(all), true), vow.length ? reduceNum(sum(vow), true) : null, con.length ? reduceNum(sum(con), true) : null];
+  const ptxt = [o.numName(nums[0], o.NUM[nums[0]])];
+  if (nums[1]) ptxt.push(o.numSoul(nums[1], o.NUM[nums[1]]));
+  if (nums[2]) ptxt.push(o.numPers(nums[2], o.NUM[nums[2]]));
+  res.push({ k: "pyth", h: o.numKicker, hint: o.numHint, nums: nums.map((x, i) => x ? [o.numLabels[i], x] : null).filter(Boolean), calc: P.words.map(w => w.map(l => l + pythValue(l)).join(" ")).join(" · ") + ` = ${sum(all)}`, t: ptxt });
+
+  // Chaldeisk numerologi
+  const csum = all.reduce((s, l) => s + chalValue(l), 0), cx = reduceNum(csum, false), pl = o.PLANET[cx];
+  const pyth1 = reduceNum(nums[0], false);
+  res.push({ k: "chal", h: o.chalKicker, hint: o.chalHint, nums: [[o.chalLabel, cx]], calc: P.words.map(w => w.map(l => l + chalValue(l)).join(" ")).join(" · ") + ` = ${csum}`, t: [o.chalText(P.full, csum, cx, pl[0], pl[1]), cx === pyth1 ? o.chalSame(cx) : o.chalDiff(nums[0])] });
+
+  // Ljudsymbolik (förnamnet)
+  const fv = fn.filter(l => VOWELS.includes(l)), fc = fn.filter(l => !VOWELS.includes(l));
+  const avg = (ls, m) => ls.length ? ls.reduce((s, l) => s + (m[l] || 0), 0) / ls.length : 0;
+  const h = avg(fc, HARDNESS), b = avg(fv, BRIGHTNESS);
+  const uniq = (ls, f) => joinList([...new Set(ls.filter(f))]);
+  const st = [];
+  if (fc.length) {
+    if (h >= 0.25) st.push(o.hard(n, uniq(fc, l => (HARDNESS[l] || 0) > 0)));
+    else if (h <= -0.25) st.push(o.soft(n, uniq(fc, l => (HARDNESS[l] || 0) < 0)));
+    else st.push(o.mixCons(n));
+  }
+  if (fv.length) {
+    if (b >= 0.34) st.push(o.bright(n, uniq(fv, l => (BRIGHTNESS[l] || 0) > 0)));
+    else if (b <= -0.34) st.push(o.dark(n, uniq(fv, l => (BRIGHTNESS[l] || 0) < 0)));
+    else st.push(o.mixVow(n));
+  }
+  const lastL = fn[fn.length - 1];
+  if (fn.length > 1) st.push(VOWELS.includes(lastL) ? o.endVowel(n, lastL) : STOPS.includes(lastL) ? o.endStop(n, lastL) : o.endSoft(n, lastL));
+  const syll = fn.reduce((s, l, i) => s + (VOWELS.includes(l) && !VOWELS.includes(fn[i - 1]) ? 1 : 0), 0);
+  st.push(o.syll(n, Math.max(1, syll)));
+  const hs = !fc.length ? "" : h >= 0.25 ? "sharp" : h <= -0.25 ? "soft" : "", bs = !fv.length ? "" : b >= 0.34 ? "Bright" : b <= -0.34 ? "Dark" : "";
+  const imp = hs && bs ? hs + bs : hs || bs.toLowerCase() || "balanced";
+  res.push({ k: "ljud", h: o.soundKicker, hint: o.soundHint, impression: o.IMPRESSION[imp], scales: [[o.scaleHard, h], [o.scaleBright, b]], t: st });
+
+  // Runorna
+  const apSet = new Set();
+  const runeWords = P.words.map(w => toRunes(w, apSet));
+  const runes = runeWords.flat();
+  const rt = [];
+  if (runes.length) {
+    const r0 = runes[0], R0 = RUNES[r0], M0 = o.RUNE[r0];
+    rt.push(o.runeFirst(n, R0[0], R0[1], M0[0], M0[1]));
+    const cnt = {};
+    runes.forEach(r => cnt[r] = (cnt[r] || 0) + 1);
+    const top = Object.entries(cnt).sort((a, c) => c[1] - a[1])[0];
+    if (top[1] > 1) rt.push(o.runeRepeat(RUNES[top[0]][1], top[1]));
+    const ae = [0, 0, 0];
+    runes.forEach(r => ae[RUNES[r][2]]++);
+    const max = Math.max(...ae);
+    if (ae.filter(x => x === max).length === 1 && max > runes.length / 2) rt.push(o.aettMain(n, o.AETT[ae.indexOf(max)][0], o.AETT[ae.indexOf(max)][1]));
+    else if (runes.length >= 3) rt.push(o.aettMix(n));
+    const ap = [...apSet];
+    if (ap.length) rt.push(o.approx(joinList(ap)));
+    if (all.includes("X")) rt.push(o.xNote);
+  }
+  res.push({ k: "runor", h: o.runeKicker, hint: o.runeHint, runeLine: runeWords.map(w => w.map(r => RUNES[r][0]).join("")).join(" "), runes: [...new Set(runes)], t: rt });
+  return res;
+}
+
+let otherCurrent = null;
+function renderOther() {
+  const host = $("otherOut");
+  host.innerHTML = "";
+  const P = profile($("otherName").value);
+  $("copyOther").disabled = !P;
+  if (!P) { otherCurrent = null; host.appendChild(el("p", "hint", ui("emptyName"))); return; }
+  const o = O();
+  const secs = otherTheories(P);
+  otherCurrent = { P, secs };
+  secs.forEach(s => {
+    const card = el("div", "analysis-text other-card");
+    card.appendChild(el("span", "label", s.h));
+    if (s.nums) {
+      const row = el("div", "nums");
+      s.nums.forEach(([lab, x]) => { const c = el("div", "num"); c.append(el("span", "big", String(x)), el("span", "cap", lab)); row.appendChild(c); });
+      card.appendChild(row);
+    }
+    if (s.impression) {
+      card.append(el("div", "arch", s.impression[0]), el("div", "adj", s.impression[1]));
+      s.scales.forEach(([labels, v]) => {
+        const sc = el("div", "scale"), tr = el("div", "track"), dot = el("span", "dot");
+        dot.style.left = (50 + 50 * Math.max(-1, Math.min(1, v))) + "%";
+        tr.appendChild(dot);
+        const lr = el("div", "ends"); lr.append(el("span", null, labels[0]), el("span", null, labels[1]));
+        sc.append(tr, lr); card.appendChild(sc);
+      });
+    }
+    if (s.runeLine) card.appendChild(el("div", "runeline", s.runeLine));
+    s.t.forEach(t => card.appendChild(el("p", null, t)));
+    if (s.runes && s.runes.length) {
+      const list = el("div", "runes");
+      s.runes.forEach(r => {
+        const it = el("div", "rune");
+        it.append(el("span", "glyph", RUNES[r][0]), el("span", "rname", RUNES[r][1] + " · " + o.RUNE[r][0]), el("span", "rdesc", o.RUNE[r][1]));
+        list.appendChild(it);
+      });
+      card.appendChild(list);
+    }
+    if (s.calc) card.appendChild(el("p", "calc", s.calc));
+    card.appendChild(el("p", "hint", s.hint));
+    host.appendChild(card);
+  });
+}
+$("copyOther").addEventListener("click", () => {
+  if (!otherCurrent) return;
+  const o = O(), lines = [otherCurrent.P.full];
+  otherCurrent.secs.forEach(s => {
+    lines.push("", s.h.toUpperCase());
+    if (s.nums) lines.push(s.nums.map(([lab, x]) => `${lab}: ${x}`).join(" · "));
+    if (s.impression) lines.push(s.impression[0] + " (" + s.impression[1] + ")");
+    if (s.runeLine) lines.push(s.runeLine);
+    lines.push(s.t.join(" "));
+    if (s.runes) s.runes.forEach(r => lines.push(`${RUNES[r][0]} ${RUNES[r][1]}: ${o.RUNE[r][1]}`));
+  });
+  copyText(lines.join("\n"), "copyOtherStatus", $("copyOther").parentElement);
+});
+// Samma namn i Analys och Fler teorier.
+$("otherName").addEventListener("input", () => { $("name").value = $("otherName").value; renderAnalysisTab(); renderOther(); });
+$("name").addEventListener("input", () => { $("otherName").value = $("name").value; renderOther(); });
+
+function renderAll() { renderAnalysisTab(); renderCompare(); renderOther(); }
 
 // ---- Kopiera ----
 function copyText(text, statusId, fallbackHost) {
@@ -1247,7 +1643,7 @@ $("copyCompare").addEventListener("click", () => {
 });
 
 // ---- Flikar ----
-const TABS = ["analys", "jamfor", "teori"];
+const TABS = ["analys", "jamfor", "fler", "teori"];
 function showTab(id) {
   if (id === "teori" && !isOwner) id = "analys";
   TABS.forEach(t => {
