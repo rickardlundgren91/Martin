@@ -133,13 +133,19 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .btns { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* Fler teorier */
+.other-sum .sumtitle { font-family: var(--display); font-size: clamp(1.6rem, 5.5vw, 2.1rem); line-height: 1.1; color: var(--accent); }
+.sumlist { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+.sumlist dt { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.sumlist dd { margin: 0; font-weight: 600; }
+@media (max-width: 480px) { .sumlist { grid-template-columns: 1fr; gap: 0; } .sumlist dd { margin-bottom: 8px; } }
+.other-card .portrait { font-size: 1.08rem; font-weight: 500; }
 .others { display: grid; gap: 16px; }
 .other-card { gap: 12px; }
 .other-card p { max-width: 65ch; }
 .other-card .calc { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); overflow-wrap: anywhere; }
 .other-card .arch { font-family: var(--display); font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.05; color: var(--accent); }
 .other-card .adj { font-weight: 600; }
-.nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 110px)); gap: 12px; }
+.nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 110px)); gap: 8px; }
 .num { display: grid; justify-items: center; gap: 6px; min-width: 0; }
 .num .big { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-size: 2.2rem; line-height: 1; }
 .num .cap { overflow-wrap: anywhere; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: center; }
@@ -1385,6 +1391,20 @@ const OTHER = {
     aettMain: (n, a, about) => `De flesta runorna i ${n} hör till ${a}, som handlar om ${about}.`,
     aettMix: n => `Runorna i ${n} är spridda över flera ätter, så namnet rymmer både skapande, prövningar och relationer.`,
     approx: ls => `${ls} saknar en egen runa, så ${ls.includes(" och ") ? "de" : "den"} har fått den runa som ligger närmast i ljud.`,
+    sumKicker: "Sammanfattning",
+    sumTitle: n => `Det de andra teorierna säger om ${n}`,
+    sumNames: { pyth: "Pythagoreisk numerologi", chal: "Chaldeisk numerologi", ljud: "Ljudsymbolik", runor: "Runorna" },
+    NUMADJ: { 1: "självständig och driven", 2: "lyhörd och samarbetsvillig", 3: "kreativ och social", 4: "stabil och pålitlig", 5: "nyfiken och frihetsälskande", 6: "omtänksam och ansvarstagande", 7: "eftertänksam och sökande", 8: "ambitiös och målmedveten", 9: "medkännande och generös", 11: "intuitiv och inspirerande", 22: "visionär och målinriktad", 33: "kärleksfull och vägledande" },
+    numPortrait: (n, a, b, c) => `Enligt numerologin är ${n} i grunden ${a}.` + (b && c ? (b === c ? ` Både inåt och utåt är ${n} ${b}.` : ` Inåt är ${n} ${b}, medan andra först möter någon som är ${c}.`) : b ? ` Inåt är ${n} ${b}.` : c ? ` Andra möter först någon som är ${c}.` : ""),
+    PLANETADJ: { 1: "viljestark och utstrålande", 2: "känslig och fantasifull", 3: "optimistisk och kunskapstörstande", 4: "egensinnig och ifrågasättande", 5: "kommunikativ och snabbtänkt", 6: "kärleksfull och harmonisk", 7: "intuitiv och drömmande", 8: "disciplinerad och tålmodig", 9: "energisk och modig" },
+    chalPortrait: (n, pl, a) => `I det chaldeiska systemet styrs ${n} av ${pl}, och det beskriver en person som är ${a}.`,
+    SOUNDADJ: { sharpBright: "pigg, snabb och energisk", sharpDark: "stark, bestämd och respektingivande", softBright: "vänlig, öppen och lätt att komma nära", softDark: "lugn, varm och trygg", sharp: "energisk, rak och bestämd", soft: "varm, mjuk och vänlig", bright: "lätt, glad och snabb", dark: "stadig, trygg och jordnära" },
+    soundPortrait: (n, a) => a ? `Namnet ${n} gör att andra ofta förväntar sig en person som är ${a}.` : `Namnet ${n} låter balanserat och ger inga starka förväntningar åt något håll, så intrycket formas mest av personen själv.`,
+    soundShort: a => a ? `uppfattas som ${a}` : "ger ett balanserat intryck",
+    RUNEADJ: { fehu: "skapande och generös", uruz: "stark och uthållig", thurisaz: "beskyddande och motståndskraftig", ansuz: "klok och kommunikativ", raidho: "rörlig och målinriktad", kenaz: "kreativ och insiktsfull", gebo: "generös och mån om andra", wunjo: "glad och gemenskapssökande", hagalaz: "förnyande och redo för förändring", naudiz: "tålig och viljestark", isa: "fokuserad och stillsam", jera: "tålmodig och långsiktig", eihwaz: "uthållig och stadig i förändringar", perthro: "gåtfull och sökande", algiz: "skyddande och vaksam", sowilo: "livskraftig och klarsynt", tiwaz: "rättvis och modig", berkano: "omsorgsfull och vårdande", ehwaz: "samarbetsvillig och pålitlig", mannaz: "självinsiktsfull och medmänsklig", laguz: "intuitiv och känslosam", ingwaz: "tålmodig och fullföljande", dagaz: "nytänkande och hoppfull", othala: "rotad och mån om sin familj" },
+    runeRepeatAdj: (r, n, b) => ` ${r}, som återkommer i namnet, gör också ${n} ${b}.`,
+    runeEndAdj: (r, n, b) => ` Namnet slutar med ${r}, som också gör ${n} ${b}.`,
+    runePortrait: (n, a, extra, aett, about) => `Enligt runorna är ${n} ${a}.` + extra + (aett ? ` Med flest runor från ${aett} handlar mycket i livet för ${n} om ${about}.` : ""),
     xNote: "X skrivs med två runor, Kenaz och Sowilo, eftersom det låter som K och S.",
     copyOther: "Kopiera"
   },
@@ -1475,6 +1495,20 @@ const OTHER = {
     aettMain: (n, a, about) => `Most of the runes in ${n} belong to ${a}, which is about ${about}.`,
     aettMix: n => `The runes in ${n} are spread over several aettir, so the name holds creation, trials and relationships alike.`,
     approx: ls => `${ls} ${ls.includes(" and ") ? "have" : "has"} no rune of ${ls.includes(" and ") ? "their" : "its"} own, so the closest rune in sound has been used.`,
+    sumKicker: "Summary",
+    sumTitle: n => `What the other theories say about ${n}`,
+    sumNames: { pyth: "Pythagorean numerology", chal: "Chaldean numerology", ljud: "Sound symbolism", runor: "The runes" },
+    NUMADJ: { 1: "independent and driven", 2: "sensitive and cooperative", 3: "creative and sociable", 4: "stable and reliable", 5: "curious and freedom-loving", 6: "caring and responsible", 7: "reflective and searching", 8: "ambitious and determined", 9: "compassionate and generous", 11: "intuitive and inspiring", 22: "visionary and purposeful", 33: "loving and guiding" },
+    numPortrait: (n, a, b, c) => `According to numerology, ${n} is at heart ${a}.` + (b && c ? (b === c ? ` Both inwardly and outwardly, ${n} is ${b}.` : ` Inwardly ${n} is ${b}, while others first meet someone who is ${c}.`) : b ? ` Inwardly ${n} is ${b}.` : c ? ` Others first meet someone who is ${c}.` : ""),
+    PLANETADJ: { 1: "strong-willed and radiant", 2: "sensitive and imaginative", 3: "optimistic and eager to learn", 4: "unconventional and questioning", 5: "communicative and quick-thinking", 6: "loving and harmonious", 7: "intuitive and dreamy", 8: "disciplined and patient", 9: "energetic and courageous" },
+    chalPortrait: (n, pl, a) => `In the Chaldean system, ${n} is ruled by ${pl}, which describes a person who is ${a}.`,
+    SOUNDADJ: { sharpBright: "lively, quick and energetic", sharpDark: "strong, firm and commanding", softBright: "friendly, open and easy to get close to", softDark: "calm, warm and secure", sharp: "energetic, direct and firm", soft: "warm, gentle and kind", bright: "light, cheerful and quick", dark: "steady, secure and weighty" },
+    soundPortrait: (n, a) => a ? `The name ${n} often makes others expect a person who is ${a}.` : `The name ${n} sounds balanced and creates no strong expectations either way, so the impression is shaped mostly by the person themselves.`,
+    soundShort: a => a ? `comes across as ${a}` : "gives a balanced impression",
+    RUNEADJ: { fehu: "productive and generous", uruz: "strong and enduring", thurisaz: "protective and resilient", ansuz: "wise and communicative", raidho: "on the move and purposeful", kenaz: "creative and insightful", gebo: "generous and caring towards others", wunjo: "joyful and sociable", hagalaz: "renewing and ready for change", naudiz: "resilient and strong-willed", isa: "focused and calm", jera: "patient and long-term", eihwaz: "enduring and steady through change", perthro: "mysterious and searching", algiz: "protective and alert", sowilo: "vital and clear-sighted", tiwaz: "fair and courageous", berkano: "caring and nurturing", ehwaz: "cooperative and trustworthy", mannaz: "self-aware and humane", laguz: "intuitive and emotional", ingwaz: "patient and thorough", dagaz: "innovative and hopeful", othala: "rooted and devoted to family" },
+    runeRepeatAdj: (r, n, b) => ` ${r}, which recurs in the name, also makes ${n} ${b}.`,
+    runeEndAdj: (r, n, b) => ` The name ends with ${r}, which also makes ${n} ${b}.`,
+    runePortrait: (n, a, extra, aett, about) => `According to the runes, ${n} is ${a}.` + extra + (aett ? ` With most runes from ${aett}, much of life for ${n} is about ${about}.` : ""),
     xNote: "X is written with two runes, Kenaz and Sowilo, since it sounds like K and S.",
     copyOther: "Copy"
   }
@@ -1493,12 +1527,13 @@ function otherTheories(P) {
   const ptxt = [o.numName(nums[0], o.NUM[nums[0]])];
   if (nums[1]) ptxt.push(o.numSoul(nums[1], o.NUM[nums[1]]));
   if (nums[2]) ptxt.push(o.numPers(nums[2], o.NUM[nums[2]]));
-  res.push({ k: "pyth", h: o.numKicker, hint: o.numHint, nums: nums.map((x, i) => x ? [o.numLabels[i], x] : null).filter(Boolean), calc: P.words.map(w => w.map(l => l + pythValue(l)).join(" ")).join(" · ") + ` = ${sum(all)}`, t: ptxt });
+  const nadj = x => x ? o.NUMADJ[x] : null;
+  res.push({ k: "pyth", portrait: o.numPortrait(n, nadj(nums[0]), nums[1] && nadj(nums[1]) !== nadj(nums[0]) ? nadj(nums[1]) : null, nums[2] && nadj(nums[2]) !== nadj(nums[0]) ? nadj(nums[2]) : null), short: nadj(nums[0]), h: o.numKicker, hint: o.numHint, nums: nums.map((x, i) => x ? [o.numLabels[i], x] : null).filter(Boolean), calc: P.words.map(w => w.map(l => l + pythValue(l)).join(" ")).join(" · ") + ` = ${sum(all)}`, t: ptxt });
 
   // Chaldeisk numerologi
   const csum = all.reduce((s, l) => s + chalValue(l), 0), cx = reduceNum(csum, false), pl = o.PLANET[cx];
   const pyth1 = reduceNum(nums[0], false);
-  res.push({ k: "chal", h: o.chalKicker, hint: o.chalHint, nums: [[o.chalLabel, cx]], calc: P.words.map(w => w.map(l => l + chalValue(l)).join(" ")).join(" · ") + ` = ${csum}`, t: [o.chalText(P.full, csum, cx, pl[0], pl[1]), cx === pyth1 ? o.chalSame(cx) : o.chalDiff(nums[0])] });
+  res.push({ k: "chal", portrait: o.chalPortrait(n, pl[0], o.PLANETADJ[cx]), short: o.PLANETADJ[cx], h: o.chalKicker, hint: o.chalHint, nums: [[o.chalLabel, cx]], calc: P.words.map(w => w.map(l => l + chalValue(l)).join(" ")).join(" · ") + ` = ${csum}`, t: [o.chalText(P.full, csum, cx, pl[0], pl[1]), cx === pyth1 ? o.chalSame(cx) : o.chalDiff(nums[0])] });
 
   // Ljudsymbolik (förnamnet)
   const fv = fn.filter(l => VOWELS.includes(l)), fc = fn.filter(l => !VOWELS.includes(l));
@@ -1522,13 +1557,15 @@ function otherTheories(P) {
   st.push(o.syll(n, Math.max(1, syll)));
   const hs = !fc.length ? "" : h >= 0.25 ? "sharp" : h <= -0.25 ? "soft" : "", bs = !fv.length ? "" : b >= 0.34 ? "Bright" : b <= -0.34 ? "Dark" : "";
   const imp = hs && bs ? hs + bs : hs || bs.toLowerCase() || "balanced";
-  res.push({ k: "ljud", h: o.soundKicker, hint: o.soundHint, impression: o.IMPRESSION[imp], scales: [[o.scaleHard, h], [o.scaleBright, b]], t: st });
+  const sadj = o.SOUNDADJ[imp] || null;
+  res.push({ k: "ljud", portrait: o.soundPortrait(n, sadj), short: o.soundShort(sadj), h: o.soundKicker, hint: o.soundHint, impression: o.IMPRESSION[imp], scales: [[o.scaleHard, h], [o.scaleBright, b]], t: st });
 
   // Runorna
   const apSet = new Set();
   const runeWords = P.words.map(w => toRunes(w, apSet));
   const runes = runeWords.flat();
   const rt = [];
+  let rPortrait = null, rShort = null;
   if (runes.length) {
     const r0 = runes[0], R0 = RUNES[r0], M0 = o.RUNE[r0];
     rt.push(o.runeFirst(n, R0[0], R0[1], M0[0], M0[1]));
@@ -1541,11 +1578,18 @@ function otherTheories(P) {
     const max = Math.max(...ae);
     if (ae.filter(x => x === max).length === 1 && max > runes.length / 2) rt.push(o.aettMain(n, o.AETT[ae.indexOf(max)][0], o.AETT[ae.indexOf(max)][1]));
     else if (runes.length >= 3) rt.push(o.aettMix(n));
+    const dom = ae.filter(x => x === max).length === 1 && max > runes.length / 2 ? o.AETT[ae.indexOf(max)] : null;
+    const repR = top[1] > 1 && top[0] !== r0 && o.RUNEADJ[top[0]] !== o.RUNEADJ[r0] ? top[0] : null;
+    const fr = runeWords[0], rEnd = fr[fr.length - 1];
+    const extra = repR ? o.runeRepeatAdj(RUNES[repR][1], n, o.RUNEADJ[repR])
+      : fr.length > 1 && o.RUNEADJ[rEnd] !== o.RUNEADJ[r0] ? o.runeEndAdj(RUNES[rEnd][1], n, o.RUNEADJ[rEnd]) : "";
+    rPortrait = o.runePortrait(n, o.RUNEADJ[r0], extra, dom ? dom[0] : "", dom ? dom[1] : "");
+    rShort = o.RUNEADJ[r0];
     const ap = [...apSet];
     if (ap.length) rt.push(o.approx(joinList(ap)));
     if (all.includes("X")) rt.push(o.xNote);
   }
-  res.push({ k: "runor", h: o.runeKicker, hint: o.runeHint, runeLine: runeWords.map(w => w.map(r => RUNES[r][0]).join("")).join(" "), runes: [...new Set(runes)], t: rt });
+  res.push({ k: "runor", portrait: rPortrait, short: rShort, h: o.runeKicker, hint: o.runeHint, runeLine: runeWords.map(w => w.map(r => RUNES[r][0]).join("")).join(" "), runes: [...new Set(runes)], t: rt });
   return res;
 }
 
@@ -1559,9 +1603,16 @@ function renderOther() {
   const o = O();
   const secs = otherTheories(P);
   otherCurrent = { P, secs };
+  const sc = el("div", "summary other-sum");
+  sc.append(el("span", "label", o.sumKicker), el("div", "sumtitle", o.sumTitle(P.n)));
+  const dl = el("dl", "sumlist");
+  secs.filter(s => s.short).forEach(s => dl.append(el("dt", null, o.sumNames[s.k]), el("dd", null, cap(s.short))));
+  sc.appendChild(dl);
+  host.appendChild(sc);
   secs.forEach(s => {
     const card = el("div", "analysis-text other-card");
     card.appendChild(el("span", "label", s.h));
+    if (s.portrait) card.appendChild(el("p", "portrait", s.portrait));
     if (s.nums) {
       const row = el("div", "nums");
       s.nums.forEach(([lab, x]) => { const c = el("div", "num"); c.append(el("span", "big", String(x)), el("span", "cap", lab)); row.appendChild(c); });
@@ -1595,9 +1646,11 @@ function renderOther() {
 }
 $("copyOther").addEventListener("click", () => {
   if (!otherCurrent) return;
-  const o = O(), lines = [otherCurrent.P.full];
+  const o = O(), lines = [o.sumTitle(otherCurrent.P.full)];
+  otherCurrent.secs.filter(s => s.short).forEach(s => lines.push(`${o.sumNames[s.k]}: ${cap(s.short)}`));
   otherCurrent.secs.forEach(s => {
     lines.push("", s.h.toUpperCase());
+    if (s.portrait) lines.push(s.portrait);
     if (s.nums) lines.push(s.nums.map(([lab, x]) => `${lab}: ${x}`).join(" · "));
     if (s.impression) lines.push(s.impression[0] + " (" + s.impression[1] + ")");
     if (s.runeLine) lines.push(s.runeLine);
