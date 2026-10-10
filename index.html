@@ -1970,19 +1970,28 @@ async function openShare() {
     sh.addEventListener("click", () => navigator.share({ files: [file], title: ui("title") }).catch(() => {}));
     btns.appendChild(sh);
   }
-  const dl = el("a", "btnlink", ui("downloadBtn")); dl.href = url; dl.download = name;
+  // I Claude sparas filen via downloads-funktionen, annars med en vanlig nedladdningslänk.
+  let dl = null;
+  if (dlNs) {
+    dl = el("button", null, ui("downloadBtn")); dl.type = "button";
+    dl.addEventListener("click", () => dlNs.save({ filename: name, data: blob }).catch(() => {}));
+  } else if (!(window.claude && window.claude.use)) {
+    dl = el("a", "btnlink", ui("downloadBtn")); dl.href = url; dl.download = name;
+  }
   const close = el("button", null, ui("closeBtn")); close.type = "button";
   const shut = () => { ov.remove(); URL.revokeObjectURL(url); document.removeEventListener("keydown", esc); $("shareImage").focus(); };
   const esc = e => { if (e.key === "Escape") shut(); };
   close.addEventListener("click", shut);
   ov.addEventListener("click", e => { if (e.target === ov) shut(); });
   document.addEventListener("keydown", esc);
-  btns.append(dl, close);
+  if (dl) btns.appendChild(dl);
+  btns.appendChild(close);
   box.append(img, el("p", "hint", ui("longPress")), btns);
   ov.appendChild(box);
   document.body.appendChild(ov);
   close.focus();
 }
+let dlNs = null;
 $("shareImage").addEventListener("click", openShare);
 
 // ---- Blindtest ----
@@ -2260,6 +2269,7 @@ renderAll();
 
 (async () => {
   const use = name => (window.claude && window.claude.use) ? window.claude.use(name).catch(() => null) : Promise.resolve(null);
+  use("downloads").then(d => { dlNs = d; });
   const [user, db] = await Promise.all([use("user"), use("db")]);
   if (user) {
     try { isOwner = await user.isOwner(); } catch (e) { isOwner = false; }
