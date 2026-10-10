@@ -35,14 +35,14 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #12131c; --surface: #1b1d2a; --fg: #e9eaf3; --muted: #a2a6c0; --line: #30334a;
+    --bg: #12131c; --surface: #1b1d2a; --fg: #e9eaf3; --muted: #b3b7cf; --line: #30334a;
     --accent: #a99cff; --accent-soft: #272449; --ok: #6fd3a0; --ok-soft: #173326; --no: #f08c8c; --no-soft: #3a1d1d;
     --warn: #f2c46b; --warn-soft: #33290f;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #12131c; --surface: #1b1d2a; --fg: #e9eaf3; --muted: #a2a6c0; --line: #30334a;
+  --bg: #12131c; --surface: #1b1d2a; --fg: #e9eaf3; --muted: #b3b7cf; --line: #30334a;
   --accent: #a99cff; --accent-soft: #272449; --ok: #6fd3a0; --ok-soft: #173326; --no: #f08c8c; --no-soft: #3a1d1d;
   --warn: #f2c46b; --warn-soft: #33290f;
   color-scheme: dark;
@@ -160,6 +160,62 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .rune .rname { font-weight: 600; font-size: 0.92rem; }
 .rune .rdesc { color: var(--muted); font-size: 0.85rem; }
 
+/* Bokstavsbandet */
+.band-wrap { display: grid; gap: 12px; }
+.band-wrap[hidden] { display: none; }
+.band-word { display: grid; gap: 2px; }
+.band-scroll { overflow-x: auto; padding: 2px 2px 4px; }
+.band-inner { position: relative; }
+.band-arcs { display: block; overflow: visible; }
+.band-arcs path[class^="rel-"] { fill: none; stroke-width: 1.8; stroke-linecap: round; }
+.rel-a { stroke: var(--muted); stroke-dasharray: 4 3; }
+.rel-i { stroke: var(--accent); }
+.rel-o { stroke: var(--ok); }
+.ah-a { fill: var(--muted); } .ah-i { fill: var(--accent); } .ah-o { fill: var(--ok); }
+.bricks, .captions { display: flex; gap: 6px; }
+.brick { flex: none; height: 54px; padding: 0; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.brick.vowel { background: var(--accent-soft); }
+.brick .ch { font-family: var(--display); font-size: 1.9rem; line-height: 1; color: var(--accent); }
+.brick.empty .ch { color: var(--muted); }
+.brick[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.captions { margin-top: 5px; }
+.bcap { flex: none; font-size: 0.6rem; line-height: 1.15; color: var(--muted); text-align: center; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.band-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.78rem; color: var(--muted); }
+.lg-hint { flex-basis: 100%; }
+.band-legend span:not(.lg-hint)::before { content: ""; display: inline-block; vertical-align: middle; margin-right: 6px; }
+.lg-v::before { width: 12px; height: 12px; border-radius: 3px; background: var(--accent-soft); border: 1px solid var(--line); }
+.lg-a::before, .lg-i::before, .lg-o::before { width: 18px; border-top: 2px solid; }
+.lg-a::before { border-top: 2px dashed var(--muted); }
+.lg-i::before { border-color: var(--accent); }
+.lg-o::before { border-color: var(--ok); }
+.band-detail { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; }
+.band-detail.empty { display: block; padding: 10px 14px; border-style: dashed; background: transparent; }
+.band-detail .big { font-family: var(--display); font-size: 3.2rem; line-height: 0.9; color: var(--accent); }
+.band-detail .body { display: grid; gap: 3px; }
+.band-detail .meta { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.band-detail .kw { font-weight: 600; font-size: 1.05rem; }
+.band-detail .desc { color: var(--muted); font-size: 0.9rem; }
+
+/* Rubrikrad med 👍/👎 */
+.part-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 28px; }
+.vote { display: inline-flex; gap: 2px; margin: 0; flex: none; }
+.vote button { width: 34px; height: 28px; padding: 0; border-radius: 999px; font-size: 0.95rem; line-height: 1; background: transparent; border-color: transparent; filter: grayscale(1); opacity: 0.5; }
+.vote button:hover { opacity: 1; filter: none; border-color: var(--line); }
+.vote button[aria-pressed="true"] { filter: none; opacity: 1; }
+.vote-hint { margin-bottom: -8px; }
+
+/* Egenskaper som piller */
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { background: var(--surface); color: var(--accent); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-weight: 600; font-size: 0.92rem; }
+
+/* Namnfält */
+.field { position: relative; }
+.field-icon { position: absolute; left: 14px; top: 50%; width: 22px; height: 22px; transform: translateY(-50%); fill: none; stroke: var(--muted); stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
+.ask .field input { padding-left: 46px; border-width: 1.5px; caret-color: var(--accent); }
+.ask .field input:hover { border-color: var(--muted); }
+.ask .field input:focus-visible { border-color: var(--accent); }
+.field:focus-within .field-icon { stroke: var(--accent); }
+
 /* Theory */
 .notice { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 0.92rem; }
 .notice[hidden] { display: none; }
@@ -222,10 +278,16 @@ td.kwcol { width: 35%; }
   <section class="panel" id="panel-analys" role="tabpanel" aria-labelledby="tab-analys">
     <div class="ask">
       <label class="label" for="name" data-i18n="nameLabel">Namn</label>
-      <input id="name" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh">
+      <div class="field"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg><input id="name" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh"></div>
     </div>
 
     <div class="summary" id="summary" aria-live="polite"></div>
+
+    <div class="band-wrap" id="bandWrap">
+      <span class="label" data-i18n="letterByLetter">Bokstav för bokstav</span>
+      <div id="band"></div>
+      <div class="band-detail" id="bandDetail" aria-live="polite"></div>
+    </div>
 
     <div class="analysis-text" id="analysis"></div>
 
@@ -234,17 +296,13 @@ td.kwcol { width: 35%; }
       <span class="status" id="copyStatus"></span>
     </div>
 
-    <details class="letters" open>
-      <summary data-i18n="letterByLetter">Bokstav för bokstav</summary>
-      <div id="tiles"></div>
-    </details>
   </section>
 
   <!-- Jämför -->
   <section class="panel" id="panel-jamfor" role="tabpanel" aria-labelledby="tab-jamfor" hidden>
     <div class="pair">
-      <div class="ask"><label class="label" for="cmpA" data-i18n="firstName">Första namnet</label><input id="cmpA" type="text" value="Martin" autocomplete="off" spellcheck="false"></div>
-      <div class="ask"><label class="label" for="cmpB" data-i18n="secondName">Andra namnet</label><input id="cmpB" type="text" value="Anna" autocomplete="off" spellcheck="false"></div>
+      <div class="ask"><label class="label" for="cmpA" data-i18n="firstName">Första namnet</label><div class="field"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg><input id="cmpA" type="text" value="Martin" autocomplete="off" spellcheck="false"></div></div>
+      <div class="ask"><label class="label" for="cmpB" data-i18n="secondName">Andra namnet</label><div class="field"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg><input id="cmpB" type="text" value="Anna" autocomplete="off" spellcheck="false"></div></div>
     </div>
     <div class="analysis-text" id="cmpOut" aria-live="polite"></div>
     <div class="toolbar">
@@ -257,7 +315,7 @@ td.kwcol { width: 35%; }
   <section class="panel" id="panel-fler" role="tabpanel" aria-labelledby="tab-fler" hidden>
     <div class="ask">
       <label class="label" for="otherName" data-i18n="nameLabel">Namn</label>
-      <input id="otherName" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh">
+      <div class="field"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg><input id="otherName" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh"></div>
     </div>
     <p class="hint" data-i18n="otherIntro">Huvudanalysen bygger på appens egen teori.</p>
     <div class="others" id="otherOut" aria-live="polite"></div>
@@ -1109,7 +1167,7 @@ const UI = {
     bulkSummary: "Klistra in hela teorin på en gång",
     bulkHint: "En rad per bokstav, till exempel <code>A: döljer det före</code>. Bokstäver som inte finns med lämnas orörda.",
     bulkBtn: "Använd listan",
-    vote: "Stämmer det?", yes: "Ja", no: "Nej", thanks: "Tack för svaret",
+    vote: "Stämmer det?", yes: "Ja", no: "Nej", thanks: "Tack för svaret", voteYes: "Stämmer", voteNo: "Stämmer inte", voteHint: "Tryck 👍 eller 👎 vid varje del och berätta om den stämmer.", bandHint: "Tryck på en bokstav för att se vad den betyder.", legendVowel: "Vokal", legendA: "A döljer", legendI: "I ger kraft", legendO: "O kopplar ihop", posOf: (i, n) => `Bokstav ${i} av ${n}`, doubleNote: l => `Dubbelt ${l} förstärker betydelsen.`,
     emptyName: "Skriv ett namn ovanför så visas analysen här.", noLetters: "Bokstäverna i namnet saknar betydelse i teorin än så länge.",
     emptyCompare: "Skriv två namn för att jämföra dem.",
     copied: "Kopierat.", copyFallback: "Texten är markerad. Kopiera den med Ctrl+C eller ⌘C.",
@@ -1137,7 +1195,7 @@ const UI = {
     bulkSummary: "Paste the whole theory at once",
     bulkHint: "One line per letter, for example <code>A: döljer det före</code>. Letters that aren't included are left unchanged.",
     bulkBtn: "Use the list",
-    vote: "Does it fit?", yes: "Yes", no: "No", thanks: "Thanks for your answer",
+    vote: "Does it fit?", yes: "Yes", no: "No", thanks: "Thanks for your answer", voteYes: "Fits", voteNo: "Doesn't fit", voteHint: "Tap 👍 or 👎 on each part to say whether it fits.", bandHint: "Tap a letter to see what it means.", legendVowel: "Vowel", legendA: "A hides", legendI: "I gives power", legendO: "O connects", posOf: (i, n) => `Letter ${i} of ${n}`, doubleNote: l => `A double ${l} strengthens the meaning.`,
     emptyName: "Type a name above and the analysis will appear here.", noLetters: "The letters in the name don't have a meaning in the theory yet.",
     emptyCompare: "Type two names to compare them.",
     copied: "Copied.", copyFallback: "The text is selected. Copy it with Ctrl+C or ⌘C.",
@@ -1182,23 +1240,110 @@ function voteRow(sectionKey) {
   if (!fb.ready || !current) { row.hidden = true; return row; }
   const key = voteKey(sectionKey);
   const prev = fb.votes[key] ? fb.votes[key].v : null;
-  row.appendChild(el("span", null, ui("vote")));
-  const yes = el("button", "yes", ui("yes")), no = el("button", "no", ui("no"));
+  const yes = el("button", "yes", "👍"), no = el("button", "no", "👎");
   yes.type = no.type = "button";
+  yes.title = ui("voteYes"); no.title = ui("voteNo");
+  yes.setAttribute("aria-label", ui("voteYes")); no.setAttribute("aria-label", ui("voteNo"));
   yes.setAttribute("aria-pressed", String(prev === 1));
   no.setAttribute("aria-pressed", String(prev === 0));
   yes.addEventListener("click", () => castVote(sectionKey, 1, row));
   no.addEventListener("click", () => castVote(sectionKey, 0, row));
   row.append(yes, no);
-  if (prev != null) row.appendChild(el("span", null, ui("thanks")));
   return row;
+}
+function partHead(label, sectionKey) {
+  const h = el("div", "part-head");
+  h.append(el("span", "label", label), voteRow(sectionKey));
+  return h;
+}
+
+// ---- Bokstavsbandet ----
+// Brickor för varje bokstav, med bågar där A döljer, I ger kraft och O kopplar ihop.
+const BW = 46, BG = 6, ARC = 36;
+let bandSel = null;
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs) { const e = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v)); return e; }
+function relOrig(l) { return RELATIONS[l] && theory[l][0] === DEFAULT_THEORY[l][0]; }
+
+function renderBand(P) {
+  const host = $("band");
+  host.innerHTML = "";
+  if (!P) { $("bandWrap").hidden = true; return; }
+  $("bandWrap").hidden = false;
+  if (!bandSel || !(P.words[bandSel[0]] && P.words[bandSel[0]][bandSel[1]])) bandSel = [0, 0];
+  const used = new Set();
+  P.words.forEach((w, wi) => {
+    const row = el("div", "band-word");
+    if (P.words.length > 1) row.appendChild(el("span", "label", nameOf(w)));
+    const scroller = el("div", "band-scroll"), inner = el("div", "band-inner");
+    const width = w.length * (BW + BG) - BG;
+    inner.style.width = width + "px";
+    const cx = i => i * (BW + BG) + BW / 2;
+    const svg = svgEl("svg", { class: "band-arcs", width, height: ARC, viewBox: `0 0 ${width} ${ARC}`, "aria-hidden": "true" });
+    const defs = svgEl("defs", {});
+    ["a", "i", "o"].forEach(k => {
+      const m = svgEl("marker", { id: `ah-${k}-${wi}`, viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" });
+      m.appendChild(svgEl("path", { d: "M0 1 L9 5 L0 9 z", class: "ah-" + k }));
+      defs.appendChild(m);
+    });
+    svg.appendChild(defs);
+    const arc = (from, to, k, both) => {
+      const x1 = cx(from), x2 = cx(to), top = ARC - 6 - Math.min(26, Math.abs(x2 - x1) * 0.35);
+      const p = svgEl("path", { d: `M${x1} ${ARC - 1} Q${(x1 + x2) / 2} ${top} ${x2} ${ARC - 1}`, class: "rel-" + k, "marker-end": `url(#ah-${k}-${wi})` });
+      if (both) p.setAttribute("marker-start", `url(#ah-${k}-${wi})`);
+      svg.appendChild(p);
+      used.add(k);
+    };
+    w.forEach((l, i) => {
+      if (!relOrig(l)) return;
+      if (l === "A" && i > 0) arc(i, i - 1, "a");
+      if (l === "I") { if (i > 0) arc(i, i - 1, "i"); if (i < w.length - 1) arc(i, i + 1, "i"); }
+      if (l === "O" && i > 0 && i < w.length - 1) arc(i - 1, i + 1, "o", true);
+    });
+    const bricks = el("div", "bricks");
+    w.forEach((l, i) => {
+      const kw = kwOf(l);
+      const b = el("button", "brick" + (VOWELS.includes(l) ? " vowel" : "") + (kw ? "" : " empty"));
+      b.type = "button";
+      b.style.width = BW + "px";
+      b.setAttribute("aria-pressed", String(!!bandSel && bandSel[0] === wi && bandSel[1] === i));
+      b.setAttribute("aria-label", `${l}: ${kw || D().noMeaning}`);
+      b.appendChild(el("span", "ch", l));
+      b.addEventListener("click", () => { bandSel = [wi, i]; renderBand(P); });
+      bricks.appendChild(b);
+    });
+    inner.append(svg, bricks);
+    scroller.appendChild(inner);
+    row.appendChild(scroller);
+    host.appendChild(row);
+  });
+
+  const leg = el("div", "band-legend");
+  leg.appendChild(el("span", "lg-v", ui("legendVowel")));
+  ["a", "i", "o"].filter(k => used.has(k)).forEach(k => leg.appendChild(el("span", "lg-" + k, ui("legend" + k.toUpperCase()))));
+  leg.appendChild(el("span", "lg-hint", ui("bandHint")));
+  host.appendChild(leg);
+
+  const det = $("bandDetail");
+  det.innerHTML = "";
+  const w = P.words[bandSel[0]], i = bandSel[1], l = w[i], kw = kwOf(l), rel = relationNote(w, i);
+  det.className = "band-detail";
+  det.appendChild(el("span", "big", l));
+  const body = el("div", "body");
+  body.appendChild(el("span", "meta", ui("posOf")(i + 1, w.length) + (ROLE[l] ? " · " + D().ROLE_LABEL[ROLE[l]] : "")));
+  body.appendChild(el("span", "kw", kw ? cap(kw) : D().noMeaning));
+  if (theory[l][1]) body.appendChild(el("span", "desc", theory[l][1]));
+  if (rel) body.appendChild(el("span", "desc", rel));
+  if (P.doubles.has(l) && (w[i - 1] === l || w[i + 1] === l)) body.appendChild(el("span", "desc", ui("doubleNote")(l)));
+  det.appendChild(body);
 }
 
 function renderAnalysisTab() {
   const P = profile($("name").value);
-  const sum = $("summary"), an = $("analysis"), tiles = $("tiles");
-  sum.innerHTML = ""; an.innerHTML = ""; tiles.innerHTML = "";
+  const sum = $("summary"), an = $("analysis");
+  sum.innerHTML = ""; an.innerHTML = "";
   $("copyAnalysis").disabled = !P;
+  renderBand(P);
   if (!P) {
     current = null;
     sum.hidden = true;
@@ -1209,36 +1354,16 @@ function renderAnalysisTab() {
   current = { P, S, parts };
 
   sum.hidden = false;
-  sum.append(el("span", "label", P.full), el("div", "arch", S.arch));
-  if (S.adjs.length) sum.appendChild(el("div", "adj", S.adjs.join(" · ")));
+  sum.append(partHead(P.full, "sammanfattning"), el("div", "arch", S.arch));
+  if (S.adjs.length) { const pl = el("div", "pills"); S.adjs.forEach(a => pl.appendChild(el("span", "pill", a))); sum.appendChild(pl); }
   if (S.essence) sum.appendChild(el("p", "essence", S.essence));
-  sum.appendChild(voteRow("sammanfattning"));
 
+  if (fb.ready) an.appendChild(el("p", "hint vote-hint", ui("voteHint")));
   if (!parts.length) an.appendChild(el("p", "hint", ui("noLetters")));
   parts.forEach(({ k, t }) => {
     const d = el("div", "part");
-    d.append(el("span", "label", D().SECTION_LABELS[k]), el("p", null, t), voteRow(k));
+    d.append(partHead(D().SECTION_LABELS[k], k), el("p", null, t));
     an.appendChild(d);
-  });
-
-  P.words.forEach((w, wi) => {
-    const wd = el("div", "word");
-    if (P.words.length > 1) wd.appendChild(el("span", "label", nameOf(w)));
-    const grid = el("div", "tiles");
-    w.forEach((l, i) => {
-      const kw = kwOf(l), desc = theory[l][1], rel = relationNote(w, i);
-      const t = el("div", "tile" + (kw ? "" : " empty"));
-      t.style.animationDelay = (i * 30) + "ms";
-      const row = el("div", "row");
-      row.append(el("span", "ch", l), el("span", "pos", `${i + 1}/${w.length}`));
-      t.append(row, el("span", "kw", kw ? cap(kw) : D().noMeaning));
-      if (desc) t.appendChild(el("span", "desc", desc));
-      if (rel) t.appendChild(el("span", "desc", rel));
-      if (ROLE[l]) t.appendChild(el("span", "role", D().ROLE_LABEL[ROLE[l]]));
-      grid.appendChild(t);
-    });
-    wd.appendChild(grid);
-    tiles.appendChild(wd);
   });
 }
 
