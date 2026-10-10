@@ -56,9 +56,17 @@ h2 { font-size: 1.7rem; }
 p { margin: 0; }
 .lede { color: var(--muted); max-width: 60ch; margin-top: 6px; }
 .label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.hint[hidden] { display: none; }
 .hint { color: var(--muted); font-size: 0.88rem; max-width: 65ch; }
 .panel { display: grid; gap: 20px; }
 .panel[hidden] { display: none; }
+
+header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px 16px; flex-wrap: wrap; }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--surface); flex: none; }
+.lang button { border: 0; border-radius: 999px; padding: 5px 12px; font-size: 0.82rem; background: none; color: var(--muted); }
+.lang button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.lang button:hover { color: var(--fg); }
+.lang button[aria-pressed="true"]:hover { color: var(--bg); }
 
 /* Tabs */
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
@@ -159,28 +167,33 @@ td.kwcol { width: 35%; }
   @keyframes rise { from { transform: translateY(4px); } to { transform: none; } }
 }
 </style>
-<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
-</head>
-<body>
+<style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style></head><body>
+
 
 <div class="wrap">
   <header>
-    <span class="label">Namntolkning</span>
-    <h1>Namnets bokstäver</h1>
-    <p class="lede">Varje bokstav i ett namn bär en betydelse. Skriv ett namn och se vad det säger om personen.</p>
+    <div>
+      <span class="label" data-i18n="kicker">Namntolkning</span>
+      <h1 data-i18n="title">Namnets bokstäver</h1>
+      <p class="lede" data-i18n="lede">Varje bokstav i ett namn bär en betydelse. Skriv ett namn och se vad det säger om personen.</p>
+    </div>
+    <div class="lang" role="group" aria-label="Språk / Language">
+      <button type="button" data-lang="sv" lang="sv" aria-pressed="true">Svenska</button>
+      <button type="button" data-lang="en" lang="en" aria-pressed="false">English</button>
+    </div>
   </header>
 
-  <div class="tabs" role="tablist" aria-label="Delar">
-    <button class="tab" role="tab" id="tab-analys" aria-controls="panel-analys" aria-selected="true" type="button">Analys</button>
-    <button class="tab" role="tab" id="tab-jamfor" aria-controls="panel-jamfor" aria-selected="false" type="button">Jämför</button>
-    <button class="tab" role="tab" id="tab-teori" aria-controls="panel-teori" aria-selected="false" type="button" hidden>Teorin</button>
+  <div class="tabs" role="tablist" data-i18n-aria="tabsAria" aria-label="Delar">
+    <button class="tab" role="tab" id="tab-analys" aria-controls="panel-analys" aria-selected="true" type="button" data-i18n="tabAnalys">Analys</button>
+    <button class="tab" role="tab" id="tab-jamfor" aria-controls="panel-jamfor" aria-selected="false" type="button" data-i18n="tabJamfor">Jämför</button>
+    <button class="tab" role="tab" id="tab-teori" aria-controls="panel-teori" aria-selected="false" type="button" hidden data-i18n="tabTeori">Teorin</button>
   </div>
 
   <!-- Analys -->
   <section class="panel" id="panel-analys" role="tabpanel" aria-labelledby="tab-analys">
     <div class="ask">
-      <label class="label" for="name">Namn</label>
-      <input id="name" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn">
+      <label class="label" for="name" data-i18n="nameLabel">Namn</label>
+      <input id="name" type="text" value="Martin" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh">
     </div>
 
     <div class="summary" id="summary" aria-live="polite"></div>
@@ -188,12 +201,12 @@ td.kwcol { width: 35%; }
     <div class="analysis-text" id="analysis"></div>
 
     <div class="toolbar">
-      <button class="primary" id="copyAnalysis" type="button">Kopiera analysen</button>
+      <button class="primary" id="copyAnalysis" type="button" data-i18n="copyAnalysis">Kopiera analysen</button>
       <span class="status" id="copyStatus"></span>
     </div>
 
     <details class="letters" open>
-      <summary>Bokstav för bokstav</summary>
+      <summary data-i18n="letterByLetter">Bokstav för bokstav</summary>
       <div id="tiles"></div>
     </details>
   </section>
@@ -201,12 +214,12 @@ td.kwcol { width: 35%; }
   <!-- Jämför -->
   <section class="panel" id="panel-jamfor" role="tabpanel" aria-labelledby="tab-jamfor" hidden>
     <div class="pair">
-      <div class="ask"><label class="label" for="cmpA">Första namnet</label><input id="cmpA" type="text" value="Martin" autocomplete="off" spellcheck="false"></div>
-      <div class="ask"><label class="label" for="cmpB">Andra namnet</label><input id="cmpB" type="text" value="Anna" autocomplete="off" spellcheck="false"></div>
+      <div class="ask"><label class="label" for="cmpA" data-i18n="firstName">Första namnet</label><input id="cmpA" type="text" value="Martin" autocomplete="off" spellcheck="false"></div>
+      <div class="ask"><label class="label" for="cmpB" data-i18n="secondName">Andra namnet</label><input id="cmpB" type="text" value="Anna" autocomplete="off" spellcheck="false"></div>
     </div>
     <div class="analysis-text" id="cmpOut" aria-live="polite"></div>
     <div class="toolbar">
-      <button class="primary" id="copyCompare" type="button">Kopiera jämförelsen</button>
+      <button class="primary" id="copyCompare" type="button" data-i18n="copyCompare">Kopiera jämförelsen</button>
       <span class="status" id="copyCmpStatus"></span>
     </div>
   </section>
@@ -214,33 +227,34 @@ td.kwcol { width: 35%; }
   <!-- Teorin (bara för ägaren) -->
   <section class="panel" id="panel-teori" role="tabpanel" aria-labelledby="tab-teori" hidden>
     <div>
-      <span class="label">Bara du ser den här fliken</span>
-      <h2>Svar från användarna</h2>
+      <span class="label" data-i18n="onlyYou">Bara du ser den här fliken</span>
+      <h2 data-i18n="answersTitle">Svar från användarna</h2>
     </div>
-    <p class="hint">Under varje del i analysen kan användarna svara om den stämmer. Här ser du hur ofta varje del träffar, och vilka bokstäver som oftast finns i namn där analysen inte stämde.</p>
-    <div id="stats"><p class="hint">Inga svar ännu.</p></div>
+    <p class="hint" data-i18n="answersHint">Under varje del i analysen kan användarna svara om den stämmer. Här ser du hur ofta varje del träffar, och vilka bokstäver som oftast finns i namn där analysen inte stämde.</p>
+    <div id="stats"><p class="hint" data-i18n="noAnswers">Inga svar ännu.</p></div>
 
     <div>
-      <span class="label">Teorin</span>
-      <h2>Bokstävernas betydelse</h2>
+      <span class="label" data-i18n="theoryKicker">Teorin</span>
+      <h2 data-i18n="theoryTitle">Bokstävernas betydelse</h2>
     </div>
-    <p class="notice" id="editedNotice" hidden>Du har ändrat teorin i den här webbläsaren. Ändringarna syns bara för dig. Skicka dem i tråden så lägger jag in dem för alla.</p>
+    <p class="hint" data-i18n="theoryLangNote" hidden></p>
+    <p class="notice" id="editedNotice" hidden data-i18n="editedNotice">Du har ändrat teorin i den här webbläsaren. Ändringarna syns bara för dig. Skicka dem i tråden så lägger jag in dem för alla.</p>
     <div class="btns">
-      <button id="copyTheory" type="button">Kopiera teorin som text</button>
-      <button id="resetBtn" type="button">Återställ till originalet</button>
+      <button id="copyTheory" type="button" data-i18n="copyTheory">Kopiera teorin som text</button>
+      <button id="resetBtn" type="button" data-i18n="reset">Återställ till originalet</button>
     </div>
     <span class="status" id="theoryStatus"></span>
     <div class="table-wrap">
       <table class="theory-table">
-        <thead><tr><th>Bokstav</th><th>Nyckelord</th><th>Beskrivning</th></tr></thead>
+        <thead><tr><th data-i18n="thLetter">Bokstav</th><th data-i18n="thKeyword">Nyckelord</th><th data-i18n="thDesc">Beskrivning</th></tr></thead>
         <tbody id="theoryBody"></tbody>
       </table>
     </div>
     <details class="bulk">
-      <summary>Klistra in hela teorin på en gång</summary>
-      <p class="hint">En rad per bokstav, till exempel <code>A: döljer det före</code>. Bokstäver som inte finns med lämnas orörda.</p>
+      <summary data-i18n="bulkSummary">Klistra in hela teorin på en gång</summary>
+      <p class="hint" data-i18n-html="bulkHint">En rad per bokstav, till exempel <code>A: döljer det före</code>. Bokstäver som inte finns med lämnas orörda.</p>
       <textarea id="bulkText" spellcheck="false" placeholder="A: ...&#10;B: ..."></textarea>
-      <div class="btns"><button class="primary" id="bulkBtn" type="button">Använd listan</button></div>
+      <div class="btns"><button class="primary" id="bulkBtn" type="button" data-i18n="bulkBtn">Använd listan</button></div>
     </details>
   </section>
 </div>
@@ -281,11 +295,29 @@ const DEFAULT_THEORY = {
   "Ö": ["tar in info medvetet", ""]
 };
 
+// Teorin på engelska. Används när en bokstav har kvar Rickards betydelse.
+const THEORY_EN = {
+  A: "hides what comes before", B: "stability", C: "agility", D: "action", E: "pride/awareness",
+  F: "relates to things, doesn't take a stand", G: "quick wit, humour, understanding", H: "communication, hides a lot",
+  I: "strength, gives power to adjacent letters", J: "listens", K: "gives protection, defence", L: "what you stand for in practice",
+  M: "thought", N: "approach", O: "direct, connects adjacent letters", P: "grounded, secure", Q: "conscious input",
+  R: "attitude", S: "personality", T: "the views you stand for", U: "empathetic", V: "adaptation", W: "",
+  X: "hides pride", Y: "teacher", Z: "self-assured", "Å": "hides consciously", "Ä": "reads consciously", "Ö": "takes in information consciously"
+};
+
+// Valt språk: "sv" eller "en".
+const LANG_KEY = "namnets-bokstaver-sprak";
+let lang = (() => {
+  try { const q = new URLSearchParams(location.search).get("lang"); if (q === "en" || q === "sv") return q; } catch (e) {}
+  try { const v = localStorage.getItem(LANG_KEY); if (v === "en" || v === "sv") return v; } catch (e) {}
+  return "sv";
+})();
+
 // Bokstäver vars betydelse verkar på grannarna.
 const RELATIONS = {
-  A: { before: true, verb: "Döljer" },
-  I: { before: true, after: true, verb: "Ger kraft till" },
-  O: { before: true, after: true, verb: "Kopplar ihop" }
+  A: { before: true },
+  I: { before: true, after: true },
+  O: { before: true, after: true }
 };
 
 const STORE_KEY = "namnets-bokstaver-teori-v2";
@@ -302,6 +334,8 @@ function loadOwnTheory() {
   return clone(DEFAULT_THEORY);
 }
 function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(theory)); } catch (e) {} }
+// Nyckelordet att visa, på valt språk när bokstaven har originalbetydelsen.
+function kwOf(l) { return lang === "en" && theory[l][0] && theory[l][0] === DEFAULT_THEORY[l][0] ? THEORY_EN[l] : theory[l][0]; }
 function isDefault() { return LETTERS.every(l => theory[l][0] === DEFAULT_THEORY[l][0] && theory[l][1] === DEFAULT_THEORY[l][1]); }
 
 // Gör om É, Ü osv. till grundbokstaven men behåll Å, Ä och Ö.
@@ -322,7 +356,7 @@ function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 function cap(s) { return s ? s[0].toUpperCase() + s.slice(1) : s; }
 function joinList(arr) {
   if (arr.length <= 1) return arr.join("");
-  return arr.slice(0, -1).join(", ") + " och " + arr[arr.length - 1];
+  return arr.slice(0, -1).join(", ") + D().and + arr[arr.length - 1];
 }
 function relationNote(w, i) {
   const r = RELATIONS[w[i]];
@@ -331,7 +365,7 @@ function relationNote(w, i) {
   if (r.before && i > 0) n.push(w[i - 1]);
   if (r.after && i < w.length - 1) n.push(w[i + 1]);
   if (!n.length) return "";
-  return r.verb + " " + n.map(l => theory[l][0] ? `${l} (${theory[l][0]})` : l).join(" och ");
+  return D().relVerb[w[i]] + " " + n.map(l => kwOf(l) ? `${l} (${kwOf(l)})` : l).join(D().and);
 }
 
 // Vikt efter placering: förnamnet väger mer än efternamn, och början av ett namn mer än slutet.
@@ -421,8 +455,8 @@ const SECTION_LABELS = {
 function bank(l) {
   const kw = theory[l][0];
   if (!kw) return null;
-  if (BANK[l] && kw === DEFAULT_THEORY[l][0]) return BANK[l];
-  return { trait: `Hos {n} märks ${kw}.`, strength: kw, shadow: null, themes: [] };
+  if (BANK[l] && kw === DEFAULT_THEORY[l][0]) return D().BANK[l];
+  return { trait: D().fallbackTrait(kw), strength: kw, shadow: null, themes: [] };
 }
 function orig(l) { return !!theory[l][0] && theory[l][0] === DEFAULT_THEORY[l][0]; }
 function fill(s, n) { return s.replace(/\{n\}/g, n); }
@@ -491,7 +525,8 @@ function hashStr(s) { let h = 2166136261; for (const c of s) { h ^= c.codePointA
 function traitOf(l, P) {
   const b = bank(l);
   if (!b) return "";
-  const opts = b === BANK[l] && ALT[l] ? [b.trait, ...ALT[l]] : [b.trait];
+  const alt = D().ALT[l];
+  const opts = b === D().BANK[l] && alt ? [b.trait, ...alt] : [b.trait];
   return fill(opts[hashStr(P.all.join("") + l) % opts.length], P.n);
 }
 
@@ -539,29 +574,333 @@ function profile(str) {
   };
 }
 
+// ---- English ----
+// Samma betydelser som på svenska, översatta så nära originalet som möjligt.
+const EN_TEXT = {
+  A: ["{n} has a side that doesn't show on the outside. Something is held back and only shown once there is trust.", "discretion", "can hide more than others suspect"],
+  B: ["{n} stands firm and is someone others can lean on when things get rough.", "stability", "can get stuck in old habits"],
+  C: ["{n} moves smoothly around obstacles and finds ways where others get stuck.", "agility", "can slip away when things get uncomfortable"],
+  D: ["{n} turns thoughts into action and wants to see things get done.", "drive", "can act before everything is thought through"],
+  E: ["{n} carries a clear pride and is aware of themselves and their own worth.", "awareness", "can find it hard to ask for help because of their pride"],
+  F: ["{n} would rather relate to things than take a stand, and likes to see several sides of the same thing.", "the ability to see several sides", "can be slow to make up their mind"],
+  G: ["{n} is quick-witted, has a sense of humour and quickly understands what is going on.", "humour", "can use jokes as a shield"],
+  H: ["{n} likes to communicate, but what is said is rarely everything. A lot stays below the surface.", "communication", "can hide more than their words reveal"],
+  I: ["{n} has an inner strength that also rubs off on everything around them.", "inner strength", "can become stubborn"],
+  J: ["{n} really listens and makes others feel heard.", "the ability to listen", "can listen so much that their own needs end up in the background"],
+  K: ["{n} protects themselves and those close to them, and has a natural defence.", "a protective instinct", "can keep others at a distance with their defences"],
+  L: ["{n} shows what they stand for in practice, more through what they do than what they say.", "practical grounding", "can grow impatient with talk that leads nowhere"],
+  M: ["{n} lives a lot in their thoughts and thinks things through properly.", "the power of thought", "can get stuck in their head"],
+  N: ["{n} has their own approach and a clear idea of how things should be done.", "their own method", "can hold on tightly to their own way of doing things"],
+  O: ["{n} is direct and connects things and people.", "directness", "can come across as harsh in their directness"],
+  P: ["{n} is grounded and secure in themselves.", "security", "can become too comfortable in their security"],
+  Q: ["{n} consciously takes in impressions and chooses what gets to influence them.", "conscious selection", "can filter out more than necessary"],
+  R: ["{n} has a clear attitude towards life and towards other people.", "a clear attitude", "can come across as rigidly principled"],
+  S: ["{n} has a personality that gets noticed when they walk into a room.", "personality", "can take up a lot of space"],
+  T: ["{n} stands for clear views and knows what they think.", "clear views", "can find it hard to let go of their views"],
+  U: ["{n} is empathetic and notices how others feel before they have said anything.", "empathy", "can take on other people's feelings"],
+  V: ["{n} adapts easily to situations and people.", "adaptability", "can adapt so much that their own will gets lost"],
+  X: ["{n} has a pride that is not shown openly.", "a quiet pride", "can hide what matters most, so that others miss it"],
+  Y: ["{n} is a teacher, someone who passes knowledge and experience on to others.", "the ability to teach", "can become preachy"],
+  Z: ["{n} is self-assured and goes their own way with conviction.", "self-assurance", "can become overconfident"],
+  "Å": ["{n} consciously hides parts of themselves and carefully chooses what is shown.", "conscious privacy", "can keep too much to themselves"],
+  "Ä": ["{n} consciously reads people and situations.", "the ability to read others", "can analyse more than they feel"],
+  "Ö": ["{n} consciously takes in information and gathers knowledge.", "a thirst for knowledge", "can take in more than they have time to digest"]
+};
+const EN_BANK = {};
+Object.entries(EN_TEXT).forEach(([l, [trait, strength, shadow]]) => EN_BANK[l] = { trait, strength, shadow, themes: BANK[l].themes });
+
+const EN_ALT = {
+  A: ["In {n} there is something that is kept hidden. It isn't shown to just anyone, only to those who come close.",
+      "{n} doesn't show everything at once. Part of them stays hidden and only comes out once there is trust."],
+  B: ["{n} is stable and gives security to the people around them.",
+      "With {n} around, things stand firm. They are a fixed point for others."],
+  C: ["{n} is agile and often finds a way around whatever stands in the way.",
+      "When something resists, {n} smoothly changes course instead of getting stuck."],
+  D: ["{n} is a person of action. What needs doing gets done.",
+      "In {n}, thoughts become action. They want to see results, not just talk."],
+  E: ["{n} has a pride and an awareness of who they are.",
+      "{n} is aware of their own worth and carries it with pride."],
+  F: ["{n} doesn't readily take a stand, but relates to things and sees several sides.",
+      "Rather than choosing a side, {n} relates to what happens and weighs different perspectives."],
+  G: ["{n} has humour, is quick in thought and understands fast.",
+      "With their quick wit and humour, {n} often understands more than they let on."],
+  H: ["{n} communicates a lot, but at the same time hides a lot behind the words.",
+      "What {n} says is only part of the picture. They like to communicate but keep a lot to themselves."],
+  I: ["{n} has strength, and that strength gives power to what is around them.",
+      "There is a power in {n} that also strengthens what lies close by."],
+  J: ["{n} is a person who listens, and others feel heard around them.",
+      "{n} listens more than they talk and takes in what others say."],
+  K: ["{n} gives protection and has a strong defence, both for themselves and for others.",
+      "When something threatens, {n} stands up for themselves and those close to them."],
+  L: ["{n} stands for things in practice. It shows in what they do.",
+      "What {n} stands for is noticed mostly in practical action, not in words."],
+  M: ["{n} is a thinker who works through things thoroughly in their mind.",
+      "A lot happens in thought for {n}. They reflect and think things through before deciding."],
+  N: ["{n} has a clear approach and their own way of doing things.",
+      "How things are done matters to {n}, and they have their own method for it."],
+  O: ["{n} is direct and connects things and people around them.",
+      "{n} says things straight out and is often the one who ties things together."],
+  P: ["{n} is grounded and secure and stands firmly in themselves.",
+      "There is a basic security in {n} that is hard to shake."],
+  Q: ["{n} consciously chooses what they take in and what gets to influence them.",
+      "The impressions {n} takes in are consciously chosen."],
+  R: ["{n} has a clear attitude and meets life and other people in their own way.",
+      "How {n} relates to things and people is thought through and clear."],
+  S: ["{n} has a clear personality that gets noticed.",
+      "The personality is strong in {n}, and others notice it."],
+  T: ["{n} knows which views they stand for and holds on to them.",
+      "{n} has clear views and stands by them."],
+  U: ["{n} is empathetic and senses how others are doing.",
+      "With their empathetic side, {n} picks up on moods and feelings in others."],
+  V: ["{n} adapts to people and situations.",
+      "{n} finds it easy to adapt to what happens around them."],
+  X: ["{n} is proud, but hides that pride from the world.",
+      "There is a pride in {n} that they don't show openly."],
+  Y: ["{n} is a teacher who likes to share what they know.",
+      "In {n} there is a teacher. They like to pass on knowledge and experience."],
+  Z: ["{n} is self-assured and stands confidently behind their cause.",
+      "{n} feels sure of themselves and shows it."],
+  "Å": ["{n} consciously hides parts of themselves and chooses what is shown.",
+        "What {n} keeps to themselves is a conscious choice."],
+  "Ä": ["{n} consciously reads people and what happens around them.",
+        "{n} observes and reads others in a conscious way."],
+  "Ö": ["{n} consciously takes in information and wants to understand.",
+        "{n} consciously seeks out information and takes in a lot."]
+};
+
+// Allt språkberoende samlat per språk.
+const LANGS = {
+  sv: {
+    BANK, ALT, THEMES, ARCHETYPE, ADJ, ROLE_LABEL, SECTION_LABELS,
+    and: " och ",
+    relVerb: { A: "Döljer", I: "Ger kraft till", O: "Kopplar ihop" },
+    noMeaning: "Ingen betydelse ännu",
+    fallbackTrait: kw => `Hos {n} märks ${kw}.`,
+    essence: (full, list) => `${full} är ett namn som präglas av ${list}.`,
+    begins: (full, l, trait) => `${full} börjar med ${l}, det första man möter. ${trait}`,
+    firstAgain: l => `${l} kommer tillbaka senare i namnet, så den grundtonen är extra stark.`,
+    strengths: (n, list) => `${n}s styrkor ligger i ${list}.`,
+    iPower: (n, ls, strs) => `I:et ger kraft åt ${ls} (${strs}), så de dragen märks extra tydligt hos ${n}.`,
+    oLink: (n, a, b, sa, sb) => `O:et kopplar ihop ${a} och ${b}. Hos ${n} hänger ${sa} och ${sb} ihop, och det ena leder direkt till det andra.`,
+    aHide: (n, l, s) => `A:et döljer ${l} (${s}). Det draget finns hos ${n}, men visas inte öppet och märks mest för dem som kommer nära.`,
+    double: (n, l, s) => `${l}${l} står bredvid varandra. Dubbla bokstäver förstärker, så ${s} är extra stark hos ${n}.`,
+    repeat: (l, c, s) => `${l} finns ${c === 2 ? "två" : c === 3 ? "tre" : c} gånger, vilket förstärker ${s}.`,
+    PAIRS: [
+      ["M", "D", "M:et tänker och D:et handlar. Det {n} tänker igenom blir också gjort."],
+      ["J", "Y", "J:et lyssnar och Y:et lär ut. Det gör {n} till en naturlig mentor som först förstår och sedan vägleder."],
+      ["U", "Ä", "U:et känner in och Ä:et läser av. {n} är svår att lura och märker snabbt vad som pågår hos andra."],
+      ["B", "P", "B och P ger dubbel trygghet. {n} är någon som sällan rubbas."],
+      ["K", "P", "K:et skyddar och P:et är tryggt. {n} skapar en trygg plats för sig själv och sina nära."],
+      ["G", "S", "G:ets humor och S:ets personlighet gör att {n} lätt syns och hörs i ett sällskap."],
+      ["N", "D", "N:et vet hur och D:et gör det. {n} har både metod och handlingskraft."],
+      ["Ö", "M", "Ö:et samlar information och M:et bearbetar den. {n} bygger sina tankar på det hen har tagit in."]
+    ],
+    manyVowels: (n, v, a) => `${n} har många vokaler (${v} av ${a}). Vokalerna styr och arbetar inåt, så mycket hos ${n} sker under ytan och påverkar hur resten av personen kommer till uttryck.`,
+    fewVowels: (n, v, a) => `${n} har få vokaler (${v} av ${a}). Personen beskrivs mest av sina konsonanter, alltså det som syns utåt i vem hen är och hur hen gör.`,
+    mixVowels: (n, v, c) => `${n} har en jämn blandning av vokaler (${v}) och konsonanter (${c}), alltså av det som styr inifrån och det som syns utåt.`,
+    mods: list => `${list} påverkar sina grannar och formar hur bokstäverna runt omkring kommer fram.`,
+    inner: (n, list) => `${list} står för det inre och medvetna hos ${n}.`,
+    consTrait: n => `Bland konsonanterna väger egenskaperna tyngst. ${n} beskrivs mer av vem hen är än av hur hen gör.`,
+    consAction: n => `Bland konsonanterna väger handlingarna tyngst. ${n} beskrivs mer av hur hen gör än av vem hen är.`,
+    consBoth: n => `Bland konsonanterna finns både egenskaper och handlingar, så både vem ${n} är och hur hen gör syns tydligt.`,
+    inOnly: (n, list) => `Namnet handlar om att ta in (${list}). ${n} lyssnar, känner in och observerar hellre än att ta plats.`,
+    outOnly: (n, list) => `Namnet handlar om att uttrycka sig och agera (${list}). ${n} visar sig genom det hen säger och gör, mer än genom att lyssna in.`,
+    inMore: n => `${n} tar in mer än hen ger ut. Hen lyssnar och läser av först, och agerar sedan.`,
+    outMore: n => `${n} ger ut mer än hen tar in. Hen agerar och uttrycker sig gärna, men har också en sida som lyssnar.`,
+    balanced: n => `${n} har en jämn balans mellan att ta in och att ge ut. Hen kan både lyssna och ta plats.`,
+    conscious: (n, list) => `Med ${list} i namnet har ${n} en ovanligt hög medvetenhet. Mycket av det hen gör är genomtänkt och valt, inte impulsivt.`,
+    manyHidden: n => `Flera bokstäver handlar om att dölja, så det finns mer under ytan hos ${n} än hos de flesta.`,
+    TENSIONS: [
+      ["F", "T", "F:et vill inte ta ställning medan T:et står för tydliga synsätt. {n} kan ha starka åsikter men ändå dra sig för att säga dem rakt ut."],
+      ["F", "L", "F:et tar inte ställning, men L:et visar vad {n} står för i praktiken. Hellre än att säga vad hen tycker visar hen det genom det hen gör."],
+      ["F", "Z", "F:et är avvaktande medan Z:et är självsäkert. {n} kan växla mellan att vara säker på sin sak och att hålla sig utanför."],
+      ["V", "T", "V:et anpassar sig medan T:et står fast vid sina synsätt. {n} behöver ibland välja mellan att ge efter och att stå kvar."],
+      ["H", "O", "H:et döljer mycket medan O:et är direkt. {n} kan vara rak i vissa frågor och samtidigt hålla annat helt för sig själv."],
+      ["Z", "X", "Z:et är självsäkert utåt, men X:et döljer stoltheten. Det som syns är säkerhet, men det {n} verkligen är stolt över behåller hen för sig själv."],
+      ["E", "X", "E:et bär stoltheten öppet medan X:et döljer den. {n} kan vara öppet stolt över vissa saker och tyst om annat."],
+      ["S", "Å", "S:et ger en tydlig personlighet, men Å:et döljer medvetet. Man ser personligheten hos {n}, men inte allt som finns bakom den."],
+      ["V", "K", "V:et anpassar sig medan K:et försvarar sig. {n} är följsam tills något viktigt hotas, och då tar försvaret över."]
+    ],
+    surname: (n, sur, list) => `Förnamnet visar vem ${n} är som person, och det väger tyngst. Efternamnet ${sur} bär det hen har med sig hemifrån: ${list}, en grund som ligger under resten.`,
+    endsSame: (n, l) => `${n} slutar som det börjar, med ${l}. Det första man möter hos ${n} är också det man bär med sig efteråt.`,
+    endsWith: (n, l, trait) => `${n} slutar med ${l}, och det är vad andra bär med sig efter ett möte. ${trait}`,
+    noRelation: n => `Inga bokstäver i namnet handlar om relationer, så ${n} visar sig nog mer genom det hen gör än genom att söka kontakt.`,
+    nothingHidden: n => `Inget i ${n} döljer något, så det man ser är i stort sett det man får.`,
+    challenge: (n, list) => `Utmaningen för ${n} är att hen ${list}.`,
+    // Jämför
+    CROSS_CLASH: [
+      ["F", "T", "{a} vill helst inte ta ställning, medan {b} har tydliga synsätt. {b} kan uppleva {a} som svävande, och {a} kan uppleva {b} som bestämd."],
+      ["F", "Z", "{a} är avvaktande medan {b} är självsäker. {b} vill gå vidare innan {a} har hunnit se alla sidor."],
+      ["V", "T", "{a} anpassar sig och {b} står fast vid sina synsätt. Det går smidigt, men risken är att {a} ger efter för ofta."],
+      ["H", "O", "{a} döljer mycket medan {b} är direkt. {b} kan behöva tålamod, och {a} kan känna sig pressad av rakheten."],
+      ["Z", "X", "{a} är självsäker utåt medan {b} döljer sin stolthet. {b} kan hamna i skuggan av {a} utan att säga något om det."],
+      ["V", "K", "{a} anpassar sig medan {b} går i försvar. {a} blir lätt den som backar när {b} känner sig hotad."],
+      ["Z", "Z", "Båda har Z och är självsäkra. Det kan bli en kamp om vem som har rätt."],
+      ["T", "T", "Båda har T och tydliga synsätt. När synsätten skiljer sig är ingen av dem snabb att ge med sig."]
+    ],
+    CROSS_MATCH: [
+      ["D", "M", "{a} handlar och {b} tänker. Tillsammans blir det både genomtänkt och gjort."],
+      ["J", "S", "{a} lyssnar och {b} har en personlighet som tar plats. {b} får utrymme och {a} får någon att lyssna på."],
+      ["J", "H", "{a} lyssnar och {b} kommunicerar. Samtalen mellan dem flyter lätt."],
+      ["U", "K", "{a} är inkännande och {b} skyddar. {a} märker vad som behövs och {b} ser till att det blir tryggt."],
+      ["Y", "Ö", "{a} lär ut och {b} tar in information. Det blir lätt ett förhållande där {a} lär och {b} lär sig."],
+      ["B", "C", "{a} är stabil och {b} är smidig. {a} ger fast mark och {b} hittar vägarna."],
+      ["P", "V", "{a} är grundad och {b} anpassar sig. {b} kan vila i tryggheten hos {a}."],
+      ["G", "M", "{a} har humor och {b} lever i tanken. {a} kan lätta upp när {b} fastnar i huvudet."],
+      ["Ä", "A", "{a} läser medvetet av andra, så det {b} döljer har svårt att förbli dolt för {a}."],
+      ["Ä", "Å", "{a} läser medvetet av andra, så det {b} döljer har svårt att förbli dolt för {a}."],
+      ["O", "", "{a} har O, som kopplar ihop. {a} blir ofta den som knyter ihop relationen."]
+    ],
+    hCommon: "Gemensamt", hComplement: "Kompletterar varandra", hClash: "Kan krocka",
+    shared: (a, b, count, ls, strs) => `${a} och ${b} delar ${count === 1 ? "bokstaven" : "bokstäverna"} ${ls}, alltså ${strs}. Där förstår de varandra utan att behöva förklara.`,
+    noShared: (a, b) => `${a} och ${b} har inga bokstäver gemensamt. De ser på det mesta på olika sätt, vilket kan göra mötet spännande men också kräver mer förklaringar.`,
+    sameFirst: l => `Båda börjar med ${l}, så det första intrycket de ger är likt.`,
+    sameTheme: th => `Båda präglas främst av ${th}.`,
+    bothHidden: () => `Båda har mycket under ytan, så det kan ta tid innan de verkligen lär känna varandra.`,
+    inOut: (i, u) => `${i} tar mest in och ${u} ger mest ut. Det är en naturlig balans där den ena lyssnar och den andra driver.`,
+    contributes: (a, b, sa, sb) => `${a} bidrar med ${sa}, som ${b} saknar, och ${b} bidrar med ${sb}.`,
+    adds: (w, o, s) => `${w} tillför ${s}, något som ${o} inte har i sitt namn.`,
+    bothOut: (a, b) => `Både ${a} och ${b} ger mer än de tar in. Båda vill gärna ta plats, och någon behöver ibland kliva tillbaka.`,
+    bothIn: (a, b) => `Både ${a} och ${b} tar in mer än de ger ut. Det blir lugnt, men någon behöver ta första steget.`,
+    noClash: (a, b) => `Det finns inga tydliga krockar mellan bokstäverna i ${a} och ${b}.`,
+    pairTitle: (a, b) => `${a} och ${b}`
+  },
+  en: {
+    BANK: EN_BANK, ALT: EN_ALT,
+    THEMES: { handling: "drive", trygghet: "security", sinne: "reflection", hallning: "clear views", relation: "connection with others", stolthet: "self-esteem", dolt: "a hidden inner life" },
+    ARCHETYPE: { handling: "The Doer", trygghet: "The Rock", sinne: "The Thinker", hallning: "The Principled One", relation: "The Attentive One", stolthet: "The Self-Assured One", dolt: "The Mysterious One" },
+    ADJ: {
+      A: "discreet", B: "stable", C: "agile", D: "driven", E: "proud", F: "cautious",
+      G: "quick-witted", H: "communicative", I: "strong", J: "attentive", K: "protective", L: "practical",
+      M: "reflective", N: "methodical", O: "direct", P: "secure", Q: "conscious", R: "considered",
+      S: "colourful", T: "opinionated", U: "empathetic", V: "adaptable", X: "reserved",
+      Y: "pedagogical", Z: "self-assured", "Å": "private", "Ä": "observant", "Ö": "curious"
+    },
+    ROLE_LABEL: { "påverkar": "Vowel · influences its neighbours", "inre": "Vowel · inner and conscious", "egenskap": "Consonant · trait", "handling": "Consonant · action" },
+    SECTION_LABELS: {
+      sammanfattning: "Summary", helhet: "Overall", styrkor: "Strengths", samverkan: "How the letters work together",
+      uppbyggnad: "How the name is built", balans: "Balance", spanningar: "Tensions in the name", efternamn: "First name and surname",
+      moten: "Meeting others", dolt: "The hidden side and the challenges"
+    },
+    and: " and ",
+    relVerb: { A: "Hides", I: "Gives power to", O: "Connects" },
+    noMeaning: "No meaning yet",
+    fallbackTrait: kw => `In {n}, ${kw} shows.`,
+    essence: (full, list) => `${full} is a name marked by ${list}.`,
+    begins: (full, l, trait) => `${full} begins with ${l}, the first thing you meet. ${trait}`,
+    firstAgain: l => `${l} comes back later in the name, so that keynote is extra strong.`,
+    strengths: (n, list) => `${n}'s strengths lie in ${list}.`,
+    iPower: (n, ls, strs) => `The I gives power to ${ls} (${strs}), so those traits are especially clear in ${n}.`,
+    oLink: (n, a, b, sa, sb) => `The O connects ${a} and ${b}. In ${n}, ${sa} and ${sb} belong together, and one leads directly to the other.`,
+    aHide: (n, l, s) => `The A hides ${l} (${s}). That trait is there in ${n}, but it isn't shown openly and is mostly noticed by those who get close.`,
+    double: (n, l, s) => `${l}${l} stand next to each other. Double letters strengthen, so ${s} is extra strong in ${n}.`,
+    repeat: (l, c, s) => `${l} appears ${c === 2 ? "twice" : c === 3 ? "three times" : c + " times"}, which strengthens ${s}.`,
+    PAIRS: [
+      ["M", "D", "The M thinks and the D acts. What {n} thinks through also gets done."],
+      ["J", "Y", "The J listens and the Y teaches. That makes {n} a natural mentor who first understands and then guides."],
+      ["U", "Ä", "The U senses and the Ä reads. {n} is hard to fool and quickly notices what is going on in others."],
+      ["B", "P", "B and P give double security. {n} is someone who is rarely shaken."],
+      ["K", "P", "The K protects and the P is secure. {n} creates a safe place for themselves and those close to them."],
+      ["G", "S", "The humour of the G and the personality of the S make {n} easily seen and heard in a group."],
+      ["N", "D", "The N knows how and the D does it. {n} has both method and drive."],
+      ["Ö", "M", "The Ö gathers information and the M processes it. {n} builds their thoughts on what they have taken in."]
+    ],
+    manyVowels: (n, v, a) => `${n} has many vowels (${v} of ${a}). The vowels steer and work inwards, so a lot happens below the surface in ${n} and shapes how the rest of the person comes through.`,
+    fewVowels: (n, v, a) => `${n} has few vowels (${v} of ${a}). The person is described mostly by their consonants, that is, what shows on the outside in who they are and how they act.`,
+    mixVowels: (n, v, c) => `${n} has an even mix of vowels (${v}) and consonants (${c}), that is, of what steers from within and what shows on the outside.`,
+    mods: list => `${list} influence${list.includes(" and ") ? "" : "s"} the neighbouring letters and shape${list.includes(" and ") ? "" : "s"} how the letters around come through.`,
+    inner: (n, list) => `${list} stand${list.includes(" and ") ? "" : "s"} for the inner and conscious side of ${n}.`,
+    consTrait: n => `Among the consonants, traits weigh the most. ${n} is described more by who they are than by how they act.`,
+    consAction: n => `Among the consonants, actions weigh the most. ${n} is described more by how they act than by who they are.`,
+    consBoth: n => `The consonants hold both traits and actions, so both who ${n} is and how they act show clearly.`,
+    inOnly: (n, list) => `The name is about taking in (${list}). ${n} would rather listen, sense and observe than take up space.`,
+    outOnly: (n, list) => `The name is about expressing and acting (${list}). ${n} shows themselves through what they say and do, more than by listening in.`,
+    inMore: n => `${n} takes in more than they give out. They listen and read the situation first, and act afterwards.`,
+    outMore: n => `${n} gives out more than they take in. They like to act and express themselves, but also have a side that listens.`,
+    balanced: n => `${n} has an even balance between taking in and giving out. They can both listen and take up space.`,
+    conscious: (n, list) => `With ${list} in the name, ${n} has an unusually high awareness. Much of what they do is thought through and chosen, not impulsive.`,
+    manyHidden: n => `Several letters are about hiding, so there is more below the surface in ${n} than in most people.`,
+    TENSIONS: [
+      ["F", "T", "The F doesn't want to take a stand, while the T stands for clear views. {n} can have strong opinions but still hold back from saying them straight out."],
+      ["F", "L", "The F doesn't take a stand, but the L shows what {n} stands for in practice. Rather than saying what they think, they show it through what they do."],
+      ["F", "Z", "The F holds back while the Z is self-assured. {n} can switch between being sure of their cause and staying out of things."],
+      ["V", "T", "The V adapts while the T holds on to its views. {n} sometimes has to choose between giving in and standing firm."],
+      ["H", "O", "The H hides a lot while the O is direct. {n} can be straightforward on some matters and at the same time keep other things entirely to themselves."],
+      ["Z", "X", "The Z is self-assured on the outside, but the X hides the pride. What shows is confidence, but what {n} is truly proud of, they keep to themselves."],
+      ["E", "X", "The E carries pride openly while the X hides it. {n} can be openly proud of some things and quiet about others."],
+      ["S", "Å", "The S gives a clear personality, but the Å hides consciously. You see the personality in {n}, but not everything behind it."],
+      ["V", "K", "The V adapts while the K defends. {n} goes along with things until something important is threatened, and then the defence takes over."]
+    ],
+    surname: (n, sur, list) => `The first name shows who ${n} is as a person, and it weighs the most. The surname ${sur} carries what they bring with them from home: ${list}, a foundation beneath everything else.`,
+    endsSame: (n, l) => `${n} ends the way it begins, with ${l}. The first thing you meet in ${n} is also what you take with you afterwards.`,
+    endsWith: (n, l, trait) => `${n} ends with ${l}, and that is what others take with them after meeting ${n}. ${trait}`,
+    noRelation: n => `No letters in the name are about relationships, so ${n} probably shows themselves more through what they do than by seeking contact.`,
+    nothingHidden: n => `Nothing in ${n} hides anything, so what you see is pretty much what you get.`,
+    challenge: (n, list) => `The challenge for ${n} is that they ${list}.`,
+    CROSS_CLASH: [
+      ["F", "T", "{a} prefers not to take a stand, while {b} has clear views. {b} may see {a} as vague, and {a} may see {b} as forceful."],
+      ["F", "Z", "{a} holds back while {b} is self-assured. {b} wants to move on before {a} has had time to see every side."],
+      ["V", "T", "{a} adapts and {b} holds on to their views. It goes smoothly, but the risk is that {a} gives in too often."],
+      ["H", "O", "{a} hides a lot while {b} is direct. {b} may need patience, and {a} may feel pressured by the directness."],
+      ["Z", "X", "{a} is self-assured on the outside while {b} hides their pride. {b} can end up in the shadow of {a} without saying anything about it."],
+      ["V", "K", "{a} adapts while {b} goes on the defensive. {a} easily becomes the one who backs down when {b} feels threatened."],
+      ["Z", "Z", "Both have Z and are self-assured. It can turn into a struggle over who is right."],
+      ["T", "T", "Both have T and clear views. When their views differ, neither of them is quick to give in."]
+    ],
+    CROSS_MATCH: [
+      ["D", "M", "{a} acts and {b} thinks. Together things get both thought through and done."],
+      ["J", "S", "{a} listens and {b} has a personality that takes up space. {b} gets room and {a} gets someone to listen to."],
+      ["J", "H", "{a} listens and {b} communicates. Conversations between them flow easily."],
+      ["U", "K", "{a} is empathetic and {b} protects. {a} notices what is needed and {b} makes sure it feels safe."],
+      ["Y", "Ö", "{a} teaches and {b} takes in information. It easily becomes a relationship where {a} teaches and {b} learns."],
+      ["B", "C", "{a} is stable and {b} is agile. {a} provides solid ground and {b} finds the way."],
+      ["P", "V", "{a} is grounded and {b} adapts. {b} can rest in the security of {a}."],
+      ["G", "M", "{a} has humour and {b} lives in their thoughts. {a} can lighten things up when {b} gets stuck in their head."],
+      ["Ä", "A", "{a} consciously reads others, so what {b} hides finds it hard to stay hidden from {a}."],
+      ["Ä", "Å", "{a} consciously reads others, so what {b} hides finds it hard to stay hidden from {a}."],
+      ["O", "", "{a} has O, which connects. {a} often becomes the one who ties the relationship together."]
+    ],
+    hCommon: "In common", hComplement: "Complementing each other", hClash: "Possible clashes",
+    shared: (a, b, count, ls, strs) => `${a} and ${b} share the ${count === 1 ? "letter" : "letters"} ${ls}, that is, ${strs}. There they understand each other without needing to explain.`,
+    noShared: (a, b) => `${a} and ${b} have no letters in common. They see most things differently, which can make the meeting exciting but also calls for more explaining.`,
+    sameFirst: l => `Both begin with ${l}, so the first impression they give is similar.`,
+    sameTheme: th => `Both are marked mainly by ${th}.`,
+    bothHidden: () => `Both have a lot below the surface, so it can take time before they really get to know each other.`,
+    inOut: (i, u) => `${i} mostly takes in and ${u} mostly gives out. It is a natural balance where one listens and the other drives.`,
+    contributes: (a, b, sa, sb) => `${a} brings ${sa}, which ${b} lacks, and ${b} brings ${sb}.`,
+    adds: (w, o, s) => `${w} adds ${s}, something ${o} doesn't have in their name.`,
+    bothOut: (a, b) => `Both ${a} and ${b} give out more than they take in. Both like to take up space, and sometimes one of them needs to step back.`,
+    bothIn: (a, b) => `Both ${a} and ${b} take in more than they give out. It stays calm, but someone needs to take the first step.`,
+    noClash: (a, b) => `There are no clear clashes between the letters in ${a} and ${b}.`,
+    pairTitle: (a, b) => `${a} and ${b}`
+  }
+};
+const D = () => LANGS[lang];
+
 function summaryOf(P) {
-  const arch = P.themes.length ? ARCHETYPE[P.themes[0]] : P.full;
-  const adjs = [...new Set(P.ranked.filter(l => ADJ[l] && orig(l)).map(l => ADJ[l]))].slice(0, 3).map(cap);
-  const top = P.themes.slice(0, 2).map(t => THEMES[t]);
-  const essence = top.length ? `${P.full} är ett namn som präglas av ${joinList(top)}.` : "";
+  const d = D();
+  const arch = P.themes.length ? d.ARCHETYPE[P.themes[0]] : P.full;
+  const adjs = [...new Set(P.ranked.filter(l => d.ADJ[l] && orig(l)).map(l => d.ADJ[l]))].slice(0, 3).map(cap);
+  const top = P.themes.slice(0, 2).map(t => d.THEMES[t]);
+  const essence = top.length ? d.essence(P.full, joinList(top)) : "";
   return { arch, adjs, essence };
 }
 
 function analyse(P) {
+  const d = D();
   const { n, first, last, counts, all, words, has } = P;
-  const kw = l => theory[l][0];
   const out = [];
 
   // Helhet
   const p1 = [];
-  if (bank(first)) p1.push(`${P.full} börjar med ${first}, det första man möter. ${traitOf(first, P)}`);
-  if (counts[first] > 1) p1.push(`${first} kommer tillbaka senare i namnet, så den grundtonen är extra stark.`);
+  if (bank(first)) p1.push(d.begins(P.full, first, traitOf(first, P)));
+  if (counts[first] > 1) p1.push(d.firstAgain(first));
   if (p1.length) out.push({ k: "helhet", t: p1.join(" ") });
 
   // Styrkor, i viktordning
   const strengths = [...new Set(P.ranked.filter(l => l !== first).map(l => bank(l).strength))].slice(0, 4);
   if (strengths.length) {
-    let t = `${n}s styrkor ligger i ${joinList(strengths)}.`;
+    let t = d.strengths(n, joinList(strengths));
     P.ranked.filter(l => l !== first && l !== last && !HIDE_L.includes(l)).slice(0, 2).forEach(l => t += " " + traitOf(l, P));
     out.push({ k: "styrkor", t });
   }
@@ -572,31 +911,20 @@ function analyse(P) {
     const prev = w[i - 1], next = w[i + 1];
     if (l === "I" && orig("I")) {
       const nb = [prev, next].filter(x => x && bank(x));
-      if (nb.length) rel.push(`I:et ger kraft åt ${joinList(nb)} (${joinList([...new Set(nb.map(x => bank(x).strength))])}), så de dragen märks extra tydligt hos ${n}.`);
+      if (nb.length) rel.push(d.iPower(n, joinList(nb), joinList([...new Set(nb.map(x => bank(x).strength))])));
     }
     if (l === "O" && orig("O") && prev && next && bank(prev) && bank(next)) {
-      rel.push(`O:et kopplar ihop ${prev} och ${next}. Hos ${n} hänger ${bank(prev).strength} och ${bank(next).strength} ihop, och det ena leder direkt till det andra.`);
+      rel.push(d.oLink(n, prev, next, bank(prev).strength, bank(next).strength));
     }
     if (l === "A" && orig("A") && prev && bank(prev)) {
-      rel.push(`A:et döljer ${prev} (${bank(prev).strength}). Det draget finns hos ${n}, men visas inte öppet och märks mest för dem som kommer nära.`);
+      rel.push(d.aHide(n, prev, bank(prev).strength));
     }
   }));
-  P.doubles.forEach(l => {
-    if (bank(l)) rel.push(`${l}${l} står bredvid varandra. Dubbla bokstäver förstärker, så ${bank(l).strength} är extra stark hos ${n}.`);
-  });
+  P.doubles.forEach(l => { if (bank(l)) rel.push(d.double(n, l, bank(l).strength)); });
   Object.entries(counts).filter(([l, c]) => c > 1 && l !== first && !P.doubles.has(l) && bank(l)).forEach(([l, c]) => {
-    rel.push(`${l} finns ${c === 2 ? "två" : c === 3 ? "tre" : c} gånger, vilket förstärker ${bank(l).strength}.`);
+    rel.push(d.repeat(l, c, bank(l).strength));
   });
-  [
-    ["M", "D", "M:et tänker och D:et handlar. Det {n} tänker igenom blir också gjort."],
-    ["J", "Y", "J:et lyssnar och Y:et lär ut. Det gör {n} till en naturlig mentor som först förstår och sedan vägleder."],
-    ["U", "Ä", "U:et känner in och Ä:et läser av. {n} är svår att lura och märker snabbt vad som pågår hos andra."],
-    ["B", "P", "B och P ger dubbel trygghet. {n} är någon som sällan rubbas."],
-    ["K", "P", "K:et skyddar och P:et är tryggt. {n} skapar en trygg plats för sig själv och sina nära."],
-    ["G", "S", "G:ets humor och S:ets personlighet gör att {n} lätt syns och hörs i ett sällskap."],
-    ["N", "D", "N:et vet hur och D:et gör det. {n} har både metod och handlingskraft."],
-    ["Ö", "M", "Ö:et samlar information och M:et bearbetar den. {n} bygger sina tankar på det hen har tagit in."]
-  ].forEach(([a, b, t]) => { if (has(a) && has(b)) rel.push(fill(t, n)); });
+  d.PAIRS.forEach(([a, b, t]) => { if (has(a) && has(b)) rel.push(fill(t, n)); });
   if (rel.length) out.push({ k: "samverkan", t: rel.join(" ") });
 
   // Namnets uppbyggnad: vokaler som styr, konsonanter som egenskaper eller handlingar.
@@ -605,105 +933,72 @@ function analyse(P) {
   const share = vow.length / all.length;
   const mods = [...new Set(vow.filter(l => ROLE[l] === "påverkar"))], inner = [...new Set(vow.filter(l => ROLE[l] === "inre"))];
   if (all.length >= 3) {
-    if (share >= 0.5) pu.push(`${n} har många vokaler (${vow.length} av ${all.length}). Vokalerna styr och arbetar inåt, så mycket hos ${n} sker under ytan och påverkar hur resten av personen kommer till uttryck.`);
-    else if (share <= 0.25) pu.push(`${n} har få vokaler (${vow.length} av ${all.length}). Personen beskrivs mest av sina konsonanter, alltså det som syns utåt i vem hen är och hur hen gör.`);
-    else pu.push(`${n} har en jämn blandning av vokaler (${vow.length}) och konsonanter (${cons.length}), alltså av det som styr inifrån och det som syns utåt.`);
+    if (share >= 0.5) pu.push(d.manyVowels(n, vow.length, all.length));
+    else if (share <= 0.25) pu.push(d.fewVowels(n, vow.length, all.length));
+    else pu.push(d.mixVowels(n, vow.length, cons.length));
   }
-  if (mods.length) pu.push(`${joinList(mods)} påverkar sina grannar och formar hur bokstäverna runt omkring kommer fram.`);
-  if (inner.length) pu.push(`${joinList(inner)} står för det inre och medvetna hos ${n}.`);
+  if (mods.length) pu.push(d.mods(joinList(mods)));
+  if (inner.length) pu.push(d.inner(n, joinList(inner)));
   const egen = cons.filter(l => ROLE[l] === "egenskap").length, hand = cons.filter(l => ROLE[l] === "handling").length;
   if (egen + hand >= 2) {
-    if (egen > hand) pu.push(`Bland konsonanterna väger egenskaperna tyngst. ${n} beskrivs mer av vem hen är än av hur hen gör.`);
+    if (egen > hand) pu.push(d.consTrait(n));
     // Handlingsbokstäverna är vanligare i namn, så de behöver en tydlig övervikt för att räknas.
-    else if (hand >= 2 * egen + 2) pu.push(`Bland konsonanterna väger handlingarna tyngst. ${n} beskrivs mer av hur hen gör än av vem hen är.`);
-    else pu.push(`Bland konsonanterna finns både egenskaper och handlingar, så både vem ${n} är och hur hen gör syns tydligt.`);
+    else if (hand >= 2 * egen + 2) pu.push(d.consAction(n));
+    else pu.push(d.consBoth(n));
   }
   if (pu.length) out.push({ k: "uppbyggnad", t: pu.join(" ") });
 
   // Balans
   const pb = [];
   const inLs = [...new Set(all.filter(l => IN_L.includes(l) && orig(l)))], utLs = [...new Set(all.filter(l => OUT_L.includes(l) && orig(l)))];
-  if (P.lean === "in" && !utLs.length) pb.push(`Namnet handlar om att ta in (${joinList(inLs)}). ${n} lyssnar, känner in och observerar hellre än att ta plats.`);
-  else if (P.lean === "ut" && !inLs.length) pb.push(`Namnet handlar om att uttrycka sig och agera (${joinList(utLs)}). ${n} visar sig genom det hen säger och gör, mer än genom att lyssna in.`);
-  else if (P.lean === "in") pb.push(`${n} tar in mer än hen ger ut. Hen lyssnar och läser av först, och agerar sedan.`);
-  else if (P.lean === "ut") pb.push(`${n} ger ut mer än hen tar in. Hen agerar och uttrycker sig gärna, men har också en sida som lyssnar.`);
-  else if (P.lean === "bal") pb.push(`${n} har en jämn balans mellan att ta in och att ge ut. Hen kan både lyssna och ta plats.`);
+  if (P.lean === "in" && !utLs.length) pb.push(d.inOnly(n, joinList(inLs)));
+  else if (P.lean === "ut" && !inLs.length) pb.push(d.outOnly(n, joinList(utLs)));
+  else if (P.lean === "in") pb.push(d.inMore(n));
+  else if (P.lean === "ut") pb.push(d.outMore(n));
+  else if (P.lean === "bal") pb.push(d.balanced(n));
   const consc = [...new Set(all.filter(l => ["E", "Q", "Å", "Ä", "Ö"].includes(l) && orig(l)))];
-  if (consc.length >= 2) pb.push(`Med ${joinList(consc)} i namnet har ${n} en ovanligt hög medvetenhet. Mycket av det hen gör är genomtänkt och valt, inte impulsivt.`);
-  if (P.hid >= 2) pb.push(`Flera bokstäver handlar om att dölja, så det finns mer under ytan hos ${n} än hos de flesta.`);
+  if (consc.length >= 2) pb.push(d.conscious(n, joinList(consc)));
+  if (P.hid >= 2) pb.push(d.manyHidden(n));
   if (pb.length) out.push({ k: "balans", t: pb.join(" ") });
 
   // Spänningar
   const ten = [];
-  [
-    ["F", "T", "F:et vill inte ta ställning medan T:et står för tydliga synsätt. {n} kan ha starka åsikter men ändå dra sig för att säga dem rakt ut."],
-    ["F", "L", "F:et tar inte ställning, men L:et visar vad {n} står för i praktiken. Hellre än att säga vad hen tycker visar hen det genom det hen gör."],
-    ["F", "Z", "F:et är avvaktande medan Z:et är självsäkert. {n} kan växla mellan att vara säker på sin sak och att hålla sig utanför."],
-    ["V", "T", "V:et anpassar sig medan T:et står fast vid sina synsätt. {n} behöver ibland välja mellan att ge efter och att stå kvar."],
-    ["H", "O", "H:et döljer mycket medan O:et är direkt. {n} kan vara rak i vissa frågor och samtidigt hålla annat helt för sig själv."],
-    ["Z", "X", "Z:et är självsäkert utåt, men X:et döljer stoltheten. Det som syns är säkerhet, men det {n} verkligen är stolt över behåller hen för sig själv."],
-    ["E", "X", "E:et bär stoltheten öppet medan X:et döljer den. {n} kan vara öppet stolt över vissa saker och tyst om annat."],
-    ["S", "Å", "S:et ger en tydlig personlighet, men Å:et döljer medvetet. Man ser personligheten hos {n}, men inte allt som finns bakom den."],
-    ["V", "K", "V:et anpassar sig medan K:et försvarar sig. {n} är följsam tills något viktigt hotas, och då tar försvaret över."]
-  ].forEach(([a, b, t]) => { if (has(a) && has(b)) ten.push(fill(t, n)); });
+  d.TENSIONS.forEach(([a, b, t]) => { if (has(a) && has(b)) ten.push(fill(t, n)); });
   if (ten.length) out.push({ k: "spanningar", t: ten.slice(0, 3).join(" ") });
 
   // Förnamn och efternamn
   if (words.length > 1) {
     const sur = words[words.length - 1], surName = nameOf(sur);
     const ss = [...new Set(sur.filter(l => bank(l)).map(l => bank(l).strength))].slice(0, 3);
-    if (ss.length) out.push({ k: "efternamn", t: `Förnamnet visar vem ${n} är som person, och det väger tyngst. Efternamnet ${surName} bär det hen har med sig hemifrån: ${joinList(ss)}, en grund som ligger under resten.` });
+    if (ss.length) out.push({ k: "efternamn", t: d.surname(n, surName, joinList(ss)) });
   }
 
   // I mötet med andra (förnamnets sista bokstav)
   const p4 = [];
   const fn = words[0];
-  if (fn.length > 1 && last === first) p4.push(`${n} slutar som det börjar, med ${last}. Det första man möter hos ${n} är också det man bär med sig efteråt.`);
-  else if (fn.length > 1 && bank(last)) p4.push(`${n} slutar med ${last}, och det är vad andra bär med sig efter ett möte. ${traitOf(last, P)}`);
+  if (fn.length > 1 && last === first) p4.push(d.endsSame(n, last));
+  else if (fn.length > 1 && bank(last)) p4.push(d.endsWith(n, last, traitOf(last, P)));
   const social = P.ranked.filter(l => l !== first && l !== last && bank(l).themes.includes("relation")).slice(0, 2);
   social.forEach(l => p4.push(traitOf(l, P)));
   const anyRelation = P.ranked.some(l => bank(l).themes.includes("relation"));
-  if (!anyRelation) p4.push(`Inga bokstäver i namnet handlar om relationer, så ${n} visar sig nog mer genom det hen gör än genom att söka kontakt.`);
+  if (!anyRelation) p4.push(d.noRelation(n));
   if (p4.length) out.push({ k: "moten", t: p4.join(" ") });
 
   // Det dolda och utmaningarna
   const p5 = [];
   const hidden = P.ranked.filter(l => ["H", "X", "Å"].includes(l) && orig(l) && l !== first);
   hidden.forEach(l => p5.push(traitOf(l, P)));
-  if (!all.some(l => HIDE_L.includes(l) && orig(l))) p5.push(`Inget i ${n} döljer något, så det man ser är i stort sett det man får.`);
+  if (!all.some(l => HIDE_L.includes(l) && orig(l))) p5.push(d.nothingHidden(n));
   const shadows = [...new Set([first, ...P.ranked].filter(l => bank(l) && bank(l).shadow && !hidden.includes(l)))].slice(0, 2).map(l => bank(l).shadow);
-  if (shadows.length) p5.push(`Utmaningen för ${n} är att hen ${joinList(shadows)}.`);
+  if (shadows.length) p5.push(d.challenge(n, joinList(shadows)));
   if (p5.length) out.push({ k: "dolt", t: p5.join(" ") });
 
   return out;
 }
 
 // ---- Jämför två namn ----
-const CROSS_CLASH = [
-  ["F", "T", "{a} vill helst inte ta ställning, medan {b} har tydliga synsätt. {b} kan uppleva {a} som svävande, och {a} kan uppleva {b} som bestämd."],
-  ["F", "Z", "{a} är avvaktande medan {b} är självsäker. {b} vill gå vidare innan {a} har hunnit se alla sidor."],
-  ["V", "T", "{a} anpassar sig och {b} står fast vid sina synsätt. Det går smidigt, men risken är att {a} ger efter för ofta."],
-  ["H", "O", "{a} döljer mycket medan {b} är direkt. {b} kan behöva tålamod, och {a} kan känna sig pressad av rakheten."],
-  ["Z", "X", "{a} är självsäker utåt medan {b} döljer sin stolthet. {b} kan hamna i skuggan av {a} utan att säga något om det."],
-  ["V", "K", "{a} anpassar sig medan {b} går i försvar. {a} blir lätt den som backar när {b} känner sig hotad."],
-  ["Z", "Z", "Båda har Z och är självsäkra. Det kan bli en kamp om vem som har rätt."],
-  ["T", "T", "Båda har T och tydliga synsätt. När synsätten skiljer sig är ingen av dem snabb att ge med sig."]
-];
-const CROSS_MATCH = [
-  ["D", "M", "{a} handlar och {b} tänker. Tillsammans blir det både genomtänkt och gjort."],
-  ["J", "S", "{a} lyssnar och {b} har en personlighet som tar plats. {b} får utrymme och {a} får någon att lyssna på."],
-  ["J", "H", "{a} lyssnar och {b} kommunicerar. Samtalen mellan dem flyter lätt."],
-  ["U", "K", "{a} är inkännande och {b} skyddar. {a} märker vad som behövs och {b} ser till att det blir tryggt."],
-  ["Y", "Ö", "{a} lär ut och {b} tar in information. Det blir lätt ett förhållande där {a} lär och {b} lär sig."],
-  ["B", "C", "{a} är stabil och {b} är smidig. {a} ger fast mark och {b} hittar vägarna."],
-  ["P", "V", "{a} är grundad och {b} anpassar sig. {b} kan vila i tryggheten hos {a}."],
-  ["G", "M", "{a} har humor och {b} lever i tanken. {a} kan lätta upp när {b} fastnar i huvudet."],
-  ["Ä", "A", "{a} läser medvetet av andra, så det {b} döljer har svårt att förbli dolt för {a}."],
-  ["Ä", "Å", "{a} läser medvetet av andra, så det {b} döljer har svårt att förbli dolt för {a}."],
-  ["O", "", "{a} har O, som kopplar ihop. {a} blir ofta den som knyter ihop relationen."]
-];
-
 function compareNames(A, B) {
+  const d = D();
   const out = [];
   let na = A.n, nb = B.n;
   if (na === nb) { na += " (1)"; nb += " (2)"; }
@@ -724,35 +1019,113 @@ function compareNames(A, B) {
 
   const g = [];
   const shared = [...A.set].filter(l => B.set.has(l) && bank(l));
-  if (shared.length) g.push(`${na} och ${nb} delar ${shared.length === 1 ? "bokstaven" : "bokstäverna"} ${joinList(shared)}, alltså ${joinList([...new Set(shared.map(l => bank(l).strength))])}. Där förstår de varandra utan att behöva förklara.`);
-  else g.push(`${na} och ${nb} har inga bokstäver gemensamt. De ser på det mesta på olika sätt, vilket kan göra mötet spännande men också kräver mer förklaringar.`);
-  if (A.first === B.first) g.push(`Båda börjar med ${A.first}, så det första intrycket de ger är likt.`);
-  if (A.themes[0] && A.themes[0] === B.themes[0]) g.push(`Båda präglas främst av ${THEMES[A.themes[0]]}.`);
-  if (A.hid >= 2 && B.hid >= 2) g.push(`Båda har mycket under ytan, så det kan ta tid innan de verkligen lär känna varandra.`);
-  out.push({ h: "Gemensamt", t: g.join(" ") });
+  if (shared.length) g.push(d.shared(na, nb, shared.length, joinList(shared), joinList([...new Set(shared.map(l => bank(l).strength))])));
+  else g.push(d.noShared(na, nb));
+  if (A.first === B.first) g.push(d.sameFirst(A.first));
+  if (A.themes[0] && A.themes[0] === B.themes[0]) g.push(d.sameTheme(d.THEMES[A.themes[0]]));
+  if (A.hid >= 2 && B.hid >= 2) g.push(d.bothHidden());
+  out.push({ h: d.hCommon, t: g.join(" ") });
 
   const k = [];
   if ((A.lean === "in" && B.lean === "ut") || (A.lean === "ut" && B.lean === "in")) {
     const [l, t] = A.lean === "in" ? [na, nb] : [nb, na];
-    k.push(`${l} tar mest in och ${t} ger mest ut. Det är en naturlig balans där den ena lyssnar och den andra driver.`);
+    k.push(d.inOut(l, t));
   }
-  k.push(...pairText(CROSS_MATCH));
+  k.push(...pairText(d.CROSS_MATCH));
   const onlyA = A.ranked.filter(l => !B.set.has(l)).slice(0, 2);
   const onlyB = B.ranked.filter(l => !A.set.has(l)).slice(0, 2);
-  if (!k.length && onlyA.length && onlyB.length) k.push(`${na} bidrar med ${joinList(onlyA.map(l => bank(l).strength))}, som ${nb} saknar, och ${nb} bidrar med ${joinList(onlyB.map(l => bank(l).strength))}.`);
+  if (!k.length && onlyA.length && onlyB.length) k.push(d.contributes(na, nb, joinList(onlyA.map(l => bank(l).strength)), joinList(onlyB.map(l => bank(l).strength))));
   else if (!k.length && (onlyA.length || onlyB.length)) {
     const [w, o, ls] = onlyA.length ? [na, nb, onlyA] : [nb, na, onlyB];
-    k.push(`${w} tillför ${joinList(ls.map(l => bank(l).strength))}, något som ${o} inte har i sitt namn.`);
+    k.push(d.adds(w, o, joinList(ls.map(l => bank(l).strength))));
   }
-  if (k.length) out.push({ h: "Kompletterar varandra", t: k.slice(0, 3).join(" ") });
+  if (k.length) out.push({ h: d.hComplement, t: k.slice(0, 3).join(" ") });
 
   const c = [];
-  if (A.lean === "ut" && B.lean === "ut") c.push(`Både ${na} och ${nb} ger mer än de tar in. Båda vill gärna ta plats, och någon behöver ibland kliva tillbaka.`);
-  if (A.lean === "in" && B.lean === "in") c.push(`Både ${na} och ${nb} tar in mer än de ger ut. Det blir lugnt, men någon behöver ta första steget.`);
-  c.push(...pairText(CROSS_CLASH));
-  out.push({ h: "Kan krocka", t: c.length ? c.slice(0, 3).join(" ") : `Det finns inga tydliga krockar mellan bokstäverna i ${na} och ${nb}.` });
+  if (A.lean === "ut" && B.lean === "ut") c.push(d.bothOut(na, nb));
+  if (A.lean === "in" && B.lean === "in") c.push(d.bothIn(na, nb));
+  c.push(...pairText(d.CROSS_CLASH));
+  out.push({ h: d.hClash, t: c.length ? c.slice(0, 3).join(" ") : d.noClash(na, nb) });
   return out;
 }
+
+// ---- Texter i gränssnittet ----
+const UI = {
+  sv: {
+    docTitle: "Namnets bokstäver", kicker: "Namntolkning", title: "Namnets bokstäver",
+    lede: "Varje bokstav i ett namn bär en betydelse. Skriv ett namn och se vad det säger om personen.",
+    tabsAria: "Delar", tabAnalys: "Analys", tabJamfor: "Jämför", tabTeori: "Teorin",
+    nameLabel: "Namn", namePh: "Skriv ett namn", copyAnalysis: "Kopiera analysen", letterByLetter: "Bokstav för bokstav",
+    firstName: "Första namnet", secondName: "Andra namnet", copyCompare: "Kopiera jämförelsen",
+    onlyYou: "Bara du ser den här fliken", answersTitle: "Svar från användarna",
+    answersHint: "Under varje del i analysen kan användarna svara om den stämmer. Här ser du hur ofta varje del träffar, och vilka bokstäver som oftast finns i namn där analysen inte stämde.",
+    noAnswers: "Inga svar ännu.", theoryKicker: "Teorin", theoryTitle: "Bokstävernas betydelse", theoryLangNote: "",
+    editedNotice: "Du har ändrat teorin i den här webbläsaren. Ändringarna syns bara för dig. Skicka dem i tråden så lägger jag in dem för alla.",
+    copyTheory: "Kopiera teorin som text", reset: "Återställ till originalet",
+    thLetter: "Bokstav", thKeyword: "Nyckelord", thDesc: "Beskrivning",
+    bulkSummary: "Klistra in hela teorin på en gång",
+    bulkHint: "En rad per bokstav, till exempel <code>A: döljer det före</code>. Bokstäver som inte finns med lämnas orörda.",
+    bulkBtn: "Använd listan",
+    vote: "Stämmer det?", yes: "Ja", no: "Nej", thanks: "Tack för svaret",
+    emptyName: "Skriv ett namn ovanför så visas analysen här.", noLetters: "Bokstäverna i namnet saknar betydelse i teorin än så länge.",
+    emptyCompare: "Skriv två namn för att jämföra dem.",
+    copied: "Kopierat.", copyFallback: "Texten är markerad. Kopiera den med Ctrl+C eller ⌘C.",
+    statsError: "Svaren kunde inte hämtas just nu.", statsNone: "Inga svar ännu. De dyker upp här när användarna börjar svara.",
+    statsCount: (a, p) => `${a} svar från ${p} ${p === 1 ? "person" : "personer"}.`,
+    statsHead1: ["Del", "Stämmer", "Ja", "Nej"], statsLetters: "Bokstäver där analysen oftast inte stämmer",
+    statsHead2: ["Bokstav", "Betydelse", "Stämmer inte", "Svar"], statsLatest: "Senaste delarna som inte stämde", refresh: "Uppdatera",
+    kwAria: l => `Nyckelord för ${l}`, descAria: l => `Beskrivning för ${l}`,
+    resetDone: "Teorin är återställd till originalet.", bulkNone: "Hittade inga rader i formatet 'A: nyckelord'.",
+    bulkDone: n => `${n} bokstäver uppdaterade.`
+  },
+  en: {
+    docTitle: "Letters of the Name", kicker: "Name interpretation", title: "Letters of the Name",
+    lede: "Every letter in a name carries a meaning. Type a name and see what it says about the person.",
+    tabsAria: "Sections", tabAnalys: "Analysis", tabJamfor: "Compare", tabTeori: "The theory",
+    nameLabel: "Name", namePh: "Type a name", copyAnalysis: "Copy the analysis", letterByLetter: "Letter by letter",
+    firstName: "First name", secondName: "Second name", copyCompare: "Copy the comparison",
+    onlyYou: "Only you can see this tab", answersTitle: "Answers from users",
+    answersHint: "Under each part of the analysis, users can answer whether it fits. Here you can see how often each part hits, and which letters most often appear in names where the analysis didn't fit.",
+    noAnswers: "No answers yet.", theoryKicker: "The theory", theoryTitle: "What the letters mean",
+    theoryLangNote: "The theory is edited in Swedish. Letters that keep their original meaning are translated automatically in the English version.",
+    editedNotice: "You have changed the theory in this browser. The changes are only visible to you. Send them in the thread and I'll add them for everyone.",
+    copyTheory: "Copy the theory as text", reset: "Reset to the original",
+    thLetter: "Letter", thKeyword: "Keyword", thDesc: "Description",
+    bulkSummary: "Paste the whole theory at once",
+    bulkHint: "One line per letter, for example <code>A: döljer det före</code>. Letters that aren't included are left unchanged.",
+    bulkBtn: "Use the list",
+    vote: "Does it fit?", yes: "Yes", no: "No", thanks: "Thanks for your answer",
+    emptyName: "Type a name above and the analysis will appear here.", noLetters: "The letters in the name don't have a meaning in the theory yet.",
+    emptyCompare: "Type two names to compare them.",
+    copied: "Copied.", copyFallback: "The text is selected. Copy it with Ctrl+C or ⌘C.",
+    statsError: "The answers couldn't be loaded right now.", statsNone: "No answers yet. They will show up here when users start answering.",
+    statsCount: (a, p) => `${a} ${a === 1 ? "answer" : "answers"} from ${p} ${p === 1 ? "person" : "people"}.`,
+    statsHead1: ["Part", "Fits", "Yes", "No"], statsLetters: "Letters where the analysis most often doesn't fit",
+    statsHead2: ["Letter", "Meaning", "Doesn't fit", "Answers"], statsLatest: "Latest parts that didn't fit", refresh: "Refresh",
+    kwAria: l => `Keyword for ${l}`, descAria: l => `Description for ${l}`,
+    resetDone: "The theory has been reset to the original.", bulkNone: "Found no lines in the format 'A: keyword'.",
+    bulkDone: n => `${n} letters updated.`
+  }
+};
+const ui = k => UI[lang][k];
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.title = ui("docTitle");
+  document.querySelectorAll("[data-i18n]").forEach(e => { const v = ui(e.dataset.i18n); e.textContent = v; if (e.tagName === "P" && e.classList.contains("hint")) e.hidden = !v; });
+  document.querySelectorAll("[data-i18n-html]").forEach(e => e.innerHTML = ui(e.dataset.i18nHtml));
+  document.querySelectorAll("[data-i18n-ph]").forEach(e => e.placeholder = ui(e.dataset.i18nPh));
+  document.querySelectorAll("[data-i18n-aria]").forEach(e => e.setAttribute("aria-label", ui(e.dataset.i18nAria)));
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+}
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch (e) {}
+  applyLang();
+  if (isOwner) { renderTable(); loadStats(); }
+  renderAll();
+}
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
 // ---- Rendering ----
 const $ = id => document.getElementById(id);
@@ -766,15 +1139,15 @@ function voteRow(sectionKey) {
   if (!fb.ready || !current) { row.hidden = true; return row; }
   const key = voteKey(sectionKey);
   const prev = fb.votes[key] ? fb.votes[key].v : null;
-  row.appendChild(el("span", null, "Stämmer det?"));
-  const yes = el("button", "yes", "Ja"), no = el("button", "no", "Nej");
+  row.appendChild(el("span", null, ui("vote")));
+  const yes = el("button", "yes", ui("yes")), no = el("button", "no", ui("no"));
   yes.type = no.type = "button";
   yes.setAttribute("aria-pressed", String(prev === 1));
   no.setAttribute("aria-pressed", String(prev === 0));
   yes.addEventListener("click", () => castVote(sectionKey, 1, row));
   no.addEventListener("click", () => castVote(sectionKey, 0, row));
   row.append(yes, no);
-  if (prev != null) row.appendChild(el("span", null, "Tack för svaret"));
+  if (prev != null) row.appendChild(el("span", null, ui("thanks")));
   return row;
 }
 
@@ -786,7 +1159,7 @@ function renderAnalysisTab() {
   if (!P) {
     current = null;
     sum.hidden = true;
-    an.appendChild(el("p", "hint", "Skriv ett namn ovanför så visas analysen här."));
+    an.appendChild(el("p", "hint", ui("emptyName")));
     return;
   }
   const S = summaryOf(P), parts = analyse(P);
@@ -798,10 +1171,10 @@ function renderAnalysisTab() {
   if (S.essence) sum.appendChild(el("p", "essence", S.essence));
   sum.appendChild(voteRow("sammanfattning"));
 
-  if (!parts.length) an.appendChild(el("p", "hint", "Bokstäverna i namnet saknar betydelse i teorin än så länge."));
+  if (!parts.length) an.appendChild(el("p", "hint", ui("noLetters")));
   parts.forEach(({ k, t }) => {
     const d = el("div", "part");
-    d.append(el("span", "label", SECTION_LABELS[k]), el("p", null, t), voteRow(k));
+    d.append(el("span", "label", D().SECTION_LABELS[k]), el("p", null, t), voteRow(k));
     an.appendChild(d);
   });
 
@@ -810,15 +1183,15 @@ function renderAnalysisTab() {
     if (P.words.length > 1) wd.appendChild(el("span", "label", nameOf(w)));
     const grid = el("div", "tiles");
     w.forEach((l, i) => {
-      const kw = theory[l][0], desc = theory[l][1], rel = relationNote(w, i);
+      const kw = kwOf(l), desc = theory[l][1], rel = relationNote(w, i);
       const t = el("div", "tile" + (kw ? "" : " empty"));
       t.style.animationDelay = (i * 30) + "ms";
       const row = el("div", "row");
       row.append(el("span", "ch", l), el("span", "pos", `${i + 1}/${w.length}`));
-      t.append(row, el("span", "kw", kw ? cap(kw) : "Ingen betydelse ännu"));
+      t.append(row, el("span", "kw", kw ? cap(kw) : D().noMeaning));
       if (desc) t.appendChild(el("span", "desc", desc));
       if (rel) t.appendChild(el("span", "desc", rel));
-      if (ROLE[l]) t.appendChild(el("span", "role", ROLE_LABEL[ROLE[l]]));
+      if (ROLE[l]) t.appendChild(el("span", "role", D().ROLE_LABEL[ROLE[l]]));
       grid.appendChild(t);
     });
     wd.appendChild(grid);
@@ -832,7 +1205,7 @@ function renderCompare() {
   out.innerHTML = "";
   const A = profile($("cmpA").value), B = profile($("cmpB").value);
   $("copyCompare").disabled = !(A && B);
-  if (!A || !B) { cmpCurrent = null; out.appendChild(el("p", "hint", "Skriv två namn för att jämföra dem.")); return; }
+  if (!A || !B) { cmpCurrent = null; out.appendChild(el("p", "hint", ui("emptyCompare"))); return; }
   cmpCurrent = { A, B, parts: compareNames(A, B) };
   cmpCurrent.parts.forEach(({ h, t }) => {
     const d = el("div", "part");
@@ -851,10 +1224,10 @@ function copyText(text, statusId, fallbackHost) {
     let ta = fallbackHost.querySelector("textarea.copy-fallback");
     if (!ta) { ta = el("textarea", "copy-fallback"); ta.rows = 8; ta.style.width = "100%"; fallbackHost.appendChild(ta); }
     ta.value = text; ta.select();
-    done("Texten är markerad. Kopiera den med Ctrl+C eller ⌘C.");
+    done(ui("copyFallback"));
   };
   try {
-    navigator.clipboard.writeText(text).then(() => done("Kopierat."), fallback);
+    navigator.clipboard.writeText(text).then(() => done(ui("copied")), fallback);
   } catch (e) { fallback(); }
 }
 $("copyAnalysis").addEventListener("click", () => {
@@ -863,12 +1236,12 @@ $("copyAnalysis").addEventListener("click", () => {
   const lines = [`${P.full}: ${S.arch}`];
   if (S.adjs.length) lines.push(S.adjs.join(" · "));
   if (S.essence) lines.push("", S.essence);
-  parts.forEach(({ k, t }) => lines.push("", SECTION_LABELS[k].toUpperCase(), t));
+  parts.forEach(({ k, t }) => lines.push("", D().SECTION_LABELS[k].toUpperCase(), t));
   copyText(lines.join("\n"), "copyStatus", $("copyAnalysis").parentElement);
 });
 $("copyCompare").addEventListener("click", () => {
   if (!cmpCurrent) return;
-  const lines = [`${cmpCurrent.A.full} och ${cmpCurrent.B.full}`];
+  const lines = [D().pairTitle(cmpCurrent.A.full, cmpCurrent.B.full)];
   cmpCurrent.parts.forEach(({ h, t }) => lines.push("", h.toUpperCase(), t));
   copyText(lines.join("\n"), "copyCmpStatus", $("copyCompare").parentElement);
 });
@@ -929,24 +1302,24 @@ async function loadStats() {
   const host = $("stats");
   let snap;
   try { snap = await fb.db.collection("feedback").get(); }
-  catch (e) { host.innerHTML = ""; host.appendChild(el("p", "hint", "Svaren kunde inte hämtas just nu.")); return; }
+  catch (e) { host.innerHTML = ""; host.appendChild(el("p", "hint", ui("statsError"))); return; }
   const all = [];
   snap.docs.forEach(d => { const v = (d.data() || {}).votes || {}; Object.values(v).forEach(x => all.push(x)); });
   host.innerHTML = "";
-  if (!all.length) { host.appendChild(el("p", "hint", "Inga svar ännu. De dyker upp här när användarna börjar svara.")); return; }
+  if (!all.length) { host.appendChild(el("p", "hint", ui("statsNone"))); return; }
 
-  host.appendChild(el("p", "hint", `${all.length} svar från ${snap.docs.length} ${snap.docs.length === 1 ? "person" : "personer"}.`));
+  host.appendChild(el("p", "hint", ui("statsCount")(all.length, snap.docs.length)));
   // Per del
   const bySec = {};
   all.forEach(x => { const s = bySec[x.s] = bySec[x.s] || { ja: 0, nej: 0 }; x.v ? s.ja++ : s.nej++; });
   const t1 = el("div", "table-wrap"), tb1 = el("table");
-  tb1.innerHTML = "<thead><tr><th>Del</th><th>Stämmer</th><th>Ja</th><th>Nej</th></tr></thead>";
+  tb1.innerHTML = "<thead><tr>" + ui("statsHead1").map(h => `<th>${h}</th>`).join("") + "</tr></thead>";
   const body1 = el("tbody");
   Object.entries(bySec).sort((a, b) => (a[1].ja / (a[1].ja + a[1].nej)) - (b[1].ja / (b[1].ja + b[1].nej))).forEach(([k, s]) => {
     const tr = el("tr"), pct = Math.round(100 * s.ja / (s.ja + s.nej));
     const bar = el("div", "bar"), fillEl = el("span"); fillEl.style.width = pct + "%"; bar.appendChild(fillEl);
     const tdBar = el("td"); tdBar.append(el("div", null, pct + " %"), bar);
-    tr.append(el("td", null, SECTION_LABELS[k] || k), tdBar, el("td", "num", String(s.ja)), el("td", "num", String(s.nej)));
+    tr.append(el("td", null, D().SECTION_LABELS[k] || k), tdBar, el("td", "num", String(s.ja)), el("td", "num", String(s.nej)));
     body1.appendChild(tr);
   });
   tb1.appendChild(body1); t1.appendChild(tb1); host.appendChild(t1);
@@ -956,13 +1329,13 @@ async function loadStats() {
   all.forEach(x => { new Set(parseName(x.n || "").flat()).forEach(l => { const b = byL[l] = byL[l] || { ja: 0, nej: 0 }; x.v ? b.ja++ : b.nej++; }); });
   const letters = Object.entries(byL).filter(([, b]) => b.ja + b.nej >= 3).sort((a, b) => (b[1].nej / (b[1].ja + b[1].nej)) - (a[1].nej / (a[1].ja + a[1].nej))).slice(0, 8);
   if (letters.length) {
-    host.appendChild(el("p", "label", "Bokstäver där analysen oftast inte stämmer"));
+    host.appendChild(el("p", "label", ui("statsLetters")));
     const t2 = el("div", "table-wrap"), tb2 = el("table");
-    tb2.innerHTML = "<thead><tr><th>Bokstav</th><th>Betydelse</th><th>Stämmer inte</th><th>Svar</th></tr></thead>";
+    tb2.innerHTML = "<thead><tr>" + ui("statsHead2").map(h => `<th>${h}</th>`).join("") + "</tr></thead>";
     const body2 = el("tbody");
     letters.forEach(([l, b]) => {
       const tr = el("tr");
-      tr.append(el("td", "letter", l), el("td", null, theory[l][0] || "–"), el("td", "num", Math.round(100 * b.nej / (b.ja + b.nej)) + " %"), el("td", "num", String(b.ja + b.nej)));
+      tr.append(el("td", "letter", l), el("td", null, kwOf(l) || "–"), el("td", "num", Math.round(100 * b.nej / (b.ja + b.nej)) + " %"), el("td", "num", String(b.ja + b.nej)));
       body2.appendChild(tr);
     });
     tb2.appendChild(body2); t2.appendChild(tb2); host.appendChild(t2);
@@ -971,12 +1344,12 @@ async function loadStats() {
   // Senaste "nej"
   const nej = all.filter(x => !x.v).sort((a, b) => b.t - a.t).slice(0, 8);
   if (nej.length) {
-    host.appendChild(el("p", "label", "Senaste delarna som inte stämde"));
+    host.appendChild(el("p", "label", ui("statsLatest")));
     const ul = el("ul");
-    nej.forEach(x => ul.appendChild(el("li", null, `${x.n}: ${SECTION_LABELS[x.s] || x.s}`)));
+    nej.forEach(x => ul.appendChild(el("li", null, `${x.n}: ${D().SECTION_LABELS[x.s] || x.s}`)));
     host.appendChild(ul);
   }
-  const btn = el("button", null, "Uppdatera"); btn.type = "button"; btn.addEventListener("click", loadStats);
+  const btn = el("button", null, ui("refresh")); btn.type = "button"; btn.addEventListener("click", loadStats);
   host.appendChild(btn);
 }
 
@@ -984,8 +1357,8 @@ async function loadStats() {
 function renderTable() {
   $("theoryBody").innerHTML = LETTERS.map(l => `<tr>
     <td class="letter">${l}</td>
-    <td class="kwcol"><input id="kw-${l}" data-l="${l}" data-i="0" aria-label="Nyckelord för ${l}" value="${esc(theory[l][0])}"></td>
-    <td><textarea id="desc-${l}" data-l="${l}" data-i="1" rows="1" aria-label="Beskrivning för ${l}">${esc(theory[l][1])}</textarea></td>
+    <td class="kwcol"><input id="kw-${l}" data-l="${l}" data-i="0" aria-label="${ui("kwAria")(l)}" value="${esc(theory[l][0])}"></td>
+    <td><textarea id="desc-${l}" data-l="${l}" data-i="1" rows="1" aria-label="${ui("descAria")(l)}">${esc(theory[l][1])}</textarea></td>
   </tr>`).join("");
   $("editedNotice").hidden = isDefault();
 }
@@ -999,7 +1372,7 @@ $("theoryBody").addEventListener("input", e => {
 $("resetBtn").addEventListener("click", () => {
   theory = clone(DEFAULT_THEORY);
   save(); renderTable(); renderAll();
-  theoryFlash("Teorin är återställd till originalet.");
+  theoryFlash(ui("resetDone"));
 });
 $("copyTheory").addEventListener("click", () => {
   const text = LETTERS.map(l => `${l}: ${theory[l][0]}${theory[l][1] ? " - " + theory[l][1] : ""}`).join("\n");
@@ -1016,12 +1389,13 @@ $("bulkBtn").addEventListener("click", () => {
     theory[l] = [split[0].trim(), split.slice(1).join(" - ").trim()];
     n++;
   });
-  if (!n) { theoryFlash("Hittade inga rader i formatet 'A: nyckelord'."); return; }
+  if (!n) { theoryFlash(ui("bulkNone")); return; }
   save(); renderTable(); renderAll();
-  theoryFlash(`${n} bokstäver uppdaterade.`);
+  theoryFlash(ui("bulkDone")(n));
 });
 
 // ---- Start ----
+applyLang();
 renderAll();
 
 (async () => {
@@ -1054,5 +1428,4 @@ renderAll();
 })();
 </script>
 
-</body>
-</html>
+</body></html>

@@ -2,6 +2,8 @@
 
 En app som tolkar namn utifrån en teori om vad varje bokstav betyder. Skriv ett namn och få en sammanfattning, en analys i flera delar och en bokstav-för-bokstav-genomgång. Två namn kan också jämföras.
 
+Appen finns på svenska och engelska. Språket väljs uppe till höger och sparas i webbläsaren. Länken `?lang=en` öppnar appen direkt på engelska.
+
 Allt körs i webbläsaren. Inget skickas någonstans och ingen inloggning behövs.
 
 ## Kör lokalt
@@ -18,4 +20,4 @@ På mobilen kan sidan sedan läggas till på hemskärmen och öppnas som en app.
 
 ## Teorin
 
-Bokstävernas betydelser ligger i `DEFAULT_THEORY` i `index.html`, och texterna som analysen bygger på i `BANK` och `ALT`.
+Bokstävernas betydelser ligger i `DEFAULT_THEORY` i `index.html`, och texterna som analysen bygger på i `BANK` och `ALT`. De engelska motsvarigheterna ligger i `THEORY_EN`, `EN_TEXT`, `EN_ALT` och `LANGS.en`.
