@@ -216,6 +216,40 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .ask .field input:focus-visible { border-color: var(--accent); }
 .field:focus-within .field-icon { stroke: var(--accent); }
 
+/* Profilstapel */
+.profile { display: grid; gap: 6px; }
+.pbar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; gap: 2px; background: var(--surface); }
+.seg { display: block; min-width: 6px; }
+.seg0, .pl0::before { background: var(--accent); }
+.seg1, .pl1::before { background: var(--ok); }
+.seg2, .pl2::before { background: var(--warn); }
+.seg3, .pl3::before { background: var(--muted); }
+.plegend { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 0.8rem; color: var(--muted); }
+.pl::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
+/* Dela som bild */
+.btnlink { font: 500 0.9rem var(--body); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); text-decoration: none; display: inline-block; }
+.btnlink:hover { border-color: var(--accent); }
+.overlay { position: fixed; inset: 0; background: rgba(10, 10, 20, 0.72); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.overlay-box { background: var(--bg); border-radius: 14px; padding: 16px; display: grid; gap: 12px; max-width: 480px; width: 100%; max-height: 100%; overflow: auto; }
+.overlay-box img { width: 100%; height: auto; border-radius: 10px; display: block; }
+
+/* Blindtest */
+.blind-card { gap: 10px; }
+.blind-card .arch { font-family: var(--display); font-size: clamp(1.7rem, 6vw, 2.2rem); line-height: 1.05; color: var(--accent); }
+.blind-card .pill { background: var(--accent-soft); }
+.blind-card.chosen { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.blind-card.own .label { color: var(--ok); }
+.blind-card > button { justify-self: start; }
+.blind-result { border-radius: 12px; padding: 16px 18px; display: grid; gap: 8px; }
+.blind-result.ok { background: var(--ok-soft); }
+.blind-result.miss { background: var(--warn-soft); }
+.blind-result .big { font-weight: 600; font-size: 1.05rem; }
+.blind-result button { justify-self: start; }
+.blind-start { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.blind-start .ask { flex: 1 1 260px; }
+.blind-out { display: grid; gap: 16px; }
+
 /* Theory */
 .notice { background: var(--warn-soft); color: var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 0.92rem; }
 .notice[hidden] { display: none; }
@@ -244,7 +278,7 @@ td.kwcol { width: 35%; }
 }
 @media (max-width: 480px) {
   .analysis-text, .summary { padding: 16px; }
-  .tab { padding: 10px 10px; }
+  .tab { padding: 10px 8px; font-size: 0.92rem; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .tile { animation: rise 0.25s ease-out both; }
@@ -270,6 +304,7 @@ td.kwcol { width: 35%; }
   <div class="tabs" role="tablist" data-i18n-aria="tabsAria" aria-label="Delar">
     <button class="tab" role="tab" id="tab-analys" aria-controls="panel-analys" aria-selected="true" type="button" data-i18n="tabAnalys">Analys</button>
     <button class="tab" role="tab" id="tab-jamfor" aria-controls="panel-jamfor" aria-selected="false" type="button" data-i18n="tabJamfor">Jämför</button>
+    <button class="tab" role="tab" id="tab-blind" aria-controls="panel-blind" aria-selected="false" type="button" data-i18n="tabBlind">Blindtest</button>
     <button class="tab" role="tab" id="tab-fler" aria-controls="panel-fler" aria-selected="false" type="button" data-i18n="tabFler">Fler teorier</button>
     <button class="tab" role="tab" id="tab-teori" aria-controls="panel-teori" aria-selected="false" type="button" hidden data-i18n="tabTeori">Teorin</button>
   </div>
@@ -293,6 +328,7 @@ td.kwcol { width: 35%; }
 
     <div class="toolbar">
       <button class="primary" id="copyAnalysis" type="button" data-i18n="copyAnalysis">Kopiera analysen</button>
+      <button id="shareImage" type="button" data-i18n="shareImage">Dela som bild</button>
       <span class="status" id="copyStatus"></span>
     </div>
 
@@ -309,6 +345,23 @@ td.kwcol { width: 35%; }
       <button class="primary" id="copyCompare" type="button" data-i18n="copyCompare">Kopiera jämförelsen</button>
       <span class="status" id="copyCmpStatus"></span>
     </div>
+  </section>
+
+  <!-- Blindtest -->
+  <section class="panel" id="panel-blind" role="tabpanel" aria-labelledby="tab-blind" hidden>
+    <div>
+      <span class="label" data-i18n="blindKicker">Blindtest</span>
+      <h2 data-i18n="blindTitle">Känner teorin igen dig?</h2>
+    </div>
+    <p class="hint" data-i18n="blindIntro">Du får tre beskrivningar utan namn. En av dem kommer från ditt namn och två från andra namn. Välj den som stämmer bäst på dig.</p>
+    <div class="blind-start">
+      <div class="ask">
+        <label class="label" for="blindName" data-i18n="yourName">Ditt namn</label>
+        <div class="field"><svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg><input id="blindName" type="text" value="" autocomplete="off" spellcheck="false" placeholder="Skriv ett namn" data-i18n-ph="namePh"></div>
+      </div>
+      <button class="primary" id="blindStart" type="button" data-i18n="blindStartBtn">Starta testet</button>
+    </div>
+    <div class="blind-out" id="blindOut" aria-live="polite"></div>
   </section>
 
   <!-- Fler teorier -->
@@ -547,7 +600,7 @@ const ROLE_LABEL = { "påverkar": "Vokal · påverkar grannarna", "inre": "Vokal
 const IN_L = ["J", "Q", "U", "Ä", "Ö"], OUT_L = ["D", "H", "S", "Y", "Z", "O"], HIDE_L = ["A", "H", "X", "Å"];
 
 const SECTION_LABELS = {
-  sammanfattning: "Sammanfattning", helhet: "Helhet", styrkor: "Styrkor", samverkan: "Hur bokstäverna samverkar",
+  blindtest: "Blindtest", sammanfattning: "Sammanfattning", helhet: "Helhet", styrkor: "Styrkor", samverkan: "Hur bokstäverna samverkar",
   uppbyggnad: "Namnets uppbyggnad", balans: "Balans", spanningar: "Spänningar i namnet", efternamn: "Förnamn och efternamn",
   moten: "I mötet med andra", dolt: "Det dolda och utmaningarna"
 };
@@ -784,6 +837,9 @@ const LANGS = {
     iPower: (n, ls, strs) => `I:et ger kraft åt ${ls} (${strs}), så de dragen märks extra tydligt hos ${n}.`,
     oLink: (n, a, b, sa, sb) => `O:et kopplar ihop ${a} och ${b}. Hos ${n} hänger ${sa} och ${sb} ihop, och det ena leder direkt till det andra.`,
     aHide: (n, l, s) => `A:et döljer ${l} (${s}). Det draget finns hos ${n}, men visas inte öppet och märks mest för dem som kommer nära.`,
+    conflictIA: n => `I:et och A:et står bredvid varandra och drar åt olika håll. I:et ger kraft åt A:et, samtidigt som A:et döljer I:et. Hos ${n} finns en inre kamp mellan att visa sin styrka och att hålla den för sig själv.`,
+    reinforceAI: n => `I:et ger kraft åt A:et framför sig, så det som döljs hos ${n} döljs extra väl. ${n} är bra på att hålla saker för sig själv.`,
+    doubleHidden: (n, l) => `A:et döljer ${l}, som i sig handlar om att dölja. Det gör att mycket hos ${n} är dubbelt dolt, och det kan ta lång tid att lära känna hen på riktigt.`,
     double: (n, l, s) => `${l}${l} står bredvid varandra. Dubbla bokstäver förstärker, så ${s} är extra stark hos ${n}.`,
     repeat: (l, c, s) => `${l} finns ${c === 2 ? "två" : c === 3 ? "tre" : c} gånger, vilket förstärker ${s}.`,
     PAIRS: [
@@ -879,7 +935,7 @@ const LANGS = {
     },
     ROLE_LABEL: { "påverkar": "Vowel · influences its neighbours", "inre": "Vowel · inner and conscious", "egenskap": "Consonant · trait", "handling": "Consonant · action" },
     SECTION_LABELS: {
-      sammanfattning: "Summary", helhet: "Overall", styrkor: "Strengths", samverkan: "How the letters work together",
+      blindtest: "Blind test", sammanfattning: "Summary", helhet: "Overall", styrkor: "Strengths", samverkan: "How the letters work together",
       uppbyggnad: "How the name is built", balans: "Balance", spanningar: "Tensions in the name", efternamn: "First name and surname",
       moten: "Meeting others", dolt: "The hidden side and the challenges"
     },
@@ -894,6 +950,9 @@ const LANGS = {
     iPower: (n, ls, strs) => `The I gives power to ${ls} (${strs}), so those traits are especially clear in ${n}.`,
     oLink: (n, a, b, sa, sb) => `The O connects ${a} and ${b}. In ${n}, ${sa} and ${sb} belong together, and one leads directly to the other.`,
     aHide: (n, l, s) => `The A hides ${l} (${s}). That trait is there in ${n}, but it isn't shown openly and is mostly noticed by those who get close.`,
+    conflictIA: n => `The I and the A stand side by side and pull in different directions. The I gives power to the A, while the A hides the I. In ${n} there is an inner struggle between showing their strength and keeping it to themselves.`,
+    reinforceAI: n => `The I gives power to the A before it, so what ${n} hides stays especially well hidden. ${n} is good at keeping things to themselves.`,
+    doubleHidden: (n, l) => `The A hides the ${l}, which is itself about hiding. That makes a lot in ${n} doubly hidden, and it can take a long time to really get to know them.`,
     double: (n, l, s) => `${l}${l} stand next to each other. Double letters strengthen, so ${s} is extra strong in ${n}.`,
     repeat: (l, c, s) => `${l} appears ${c === 2 ? "twice" : c === 3 ? "three times" : c + " times"}, which strengthens ${s}.`,
     PAIRS: [
@@ -1022,6 +1081,11 @@ function analyse(P) {
     }
   }));
   P.doubles.forEach(l => { if (bank(l)) rel.push(d.double(n, l, bank(l).strength)); });
+  words.forEach(w => w.forEach((l, i) => {
+    const prev = w[i - 1];
+    if (l === "I" && prev === "A" && orig("I") && orig("A")) rel.push(d.reinforceAI(n));
+    if (l === "A" && ["H", "X", "Å"].includes(prev) && orig("A") && orig(prev)) rel.push(d.doubleHidden(n, prev));
+  }));
   Object.entries(counts).filter(([l, c]) => c > 1 && l !== first && !P.doubles.has(l) && bank(l)).forEach(([l, c]) => {
     rel.push(d.repeat(l, c, bank(l).strength));
   });
@@ -1064,6 +1128,7 @@ function analyse(P) {
 
   // Spänningar
   const ten = [];
+  words.forEach(w => w.forEach((l, i) => { if (l === "A" && w[i - 1] === "I" && orig("A") && orig("I")) ten.push(d.conflictIA(n)); }));
   d.TENSIONS.forEach(([a, b, t]) => { if (has(a) && has(b)) ten.push(fill(t, n)); });
   if (ten.length) out.push({ k: "spanningar", t: ten.slice(0, 3).join(" ") });
 
@@ -1155,7 +1220,7 @@ const UI = {
   sv: {
     docTitle: "Namnets bokstäver", kicker: "Namntolkning", title: "Namnets bokstäver",
     lede: "Varje bokstav i ett namn bär en betydelse. Skriv ett namn och se vad det säger om personen.",
-    tabsAria: "Delar", tabAnalys: "Analys", tabJamfor: "Jämför", tabFler: "Fler teorier", otherIntro: "Huvudanalysen bygger på appens egen teori. Här tolkas samma namn med andra kända system, så att du kan jämföra vad de säger.", copyOther: "Kopiera", tabTeori: "Teorin",
+    tabsAria: "Delar", tabAnalys: "Analys", tabJamfor: "Jämför", tabBlind: "Blindtest", blindKicker: "Blindtest", blindTitle: "Känner teorin igen dig?", blindIntro: "Du får tre beskrivningar utan namn. En av dem kommer från ditt namn och två från andra namn. Välj den som stämmer bäst på dig. Gör gärna testet innan du läser din egen analys.", yourName: "Ditt namn", blindStartBtn: "Starta testet", blindPerson: "Personen", blindChallenge: l => `Utmaningen är att personen ${l}.`, blindCard: i => `Beskrivning ${i}`, blindPick: "Det här är jag", blindRight: "Rätt! Teorin beskrev dig bäst av de tre.", blindWrong: (nm, k) => `Du valde beskrivningen för ${nm}. Din egen var beskrivning ${k}.`, blindChance: "Den som gissar på måfå får rätt en gång av tre. Ju oftare folk väljer sin egen beskrivning, desto mer träffar teorin.", blindAgain: "Gör testet igen", shareImage: "Dela som bild", shareBtn: "Dela", downloadBtn: "Ladda ner", closeBtn: "Stäng", longPress: "Du kan också trycka länge på bilden för att spara den.", profileLabel: "Namnets profil", profileNames: ["Påverkar", "Inre", "Egenskaper", "Handlingar"], tabFler: "Fler teorier", otherIntro: "Huvudanalysen bygger på appens egen teori. Här tolkas samma namn med andra kända system, så att du kan jämföra vad de säger.", copyOther: "Kopiera", tabTeori: "Teorin",
     nameLabel: "Namn", namePh: "Skriv ett namn", copyAnalysis: "Kopiera analysen", letterByLetter: "Bokstav för bokstav",
     firstName: "Första namnet", secondName: "Andra namnet", copyCompare: "Kopiera jämförelsen",
     onlyYou: "Bara du ser den här fliken", answersTitle: "Svar från användarna",
@@ -1182,7 +1247,7 @@ const UI = {
   en: {
     docTitle: "Letters of the Name", kicker: "Name interpretation", title: "Letters of the Name",
     lede: "Every letter in a name carries a meaning. Type a name and see what it says about the person.",
-    tabsAria: "Sections", tabAnalys: "Analysis", tabJamfor: "Compare", tabFler: "More theories", otherIntro: "The main analysis is based on the app's own theory. Here the same name is read with other well-known systems, so you can compare what they say.", copyOther: "Copy", tabTeori: "The theory",
+    tabsAria: "Sections", tabAnalys: "Analysis", tabJamfor: "Compare", tabBlind: "Blind test", blindKicker: "Blind test", blindTitle: "Does the theory recognise you?", blindIntro: "You get three descriptions without names. One of them comes from your name and two from other names. Pick the one that fits you best. Ideally, take the test before reading your own analysis.", yourName: "Your name", blindStartBtn: "Start the test", blindPerson: "This person", blindChallenge: l => `The challenge is that this person ${l}.`, blindCard: i => `Description ${i}`, blindPick: "This is me", blindRight: "Correct! The theory described you best of the three.", blindWrong: (nm, k) => `You picked the description for ${nm}. Yours was description ${k}.`, blindChance: "Someone guessing at random is right one time in three. The more often people pick their own description, the better the theory hits.", blindAgain: "Take the test again", shareImage: "Share as image", shareBtn: "Share", downloadBtn: "Download", closeBtn: "Close", longPress: "You can also long-press the image to save it.", profileLabel: "Name profile", profileNames: ["Influence", "Inner", "Traits", "Actions"], tabFler: "More theories", otherIntro: "The main analysis is based on the app's own theory. Here the same name is read with other well-known systems, so you can compare what they say.", copyOther: "Copy", tabTeori: "The theory",
     nameLabel: "Name", namePh: "Type a name", copyAnalysis: "Copy the analysis", letterByLetter: "Letter by letter",
     firstName: "First name", secondName: "Second name", copyCompare: "Copy the comparison",
     onlyYou: "Only you can see this tab", answersTitle: "Answers from users",
@@ -1343,6 +1408,7 @@ function renderAnalysisTab() {
   const sum = $("summary"), an = $("analysis");
   sum.innerHTML = ""; an.innerHTML = "";
   $("copyAnalysis").disabled = !P;
+  $("shareImage").disabled = !P;
   renderBand(P);
   if (!P) {
     current = null;
@@ -1357,6 +1423,7 @@ function renderAnalysisTab() {
   sum.append(partHead(P.full, "sammanfattning"), el("div", "arch", S.arch));
   if (S.adjs.length) { const pl = el("div", "pills"); S.adjs.forEach(a => pl.appendChild(el("span", "pill", a))); sum.appendChild(pl); }
   if (S.essence) sum.appendChild(el("p", "essence", S.essence));
+  sum.appendChild(profileBar(P));
 
   if (fb.ready) an.appendChild(el("p", "hint vote-hint", ui("voteHint")));
   if (!parts.length) an.appendChild(el("p", "hint", ui("noLetters")));
@@ -1788,6 +1855,224 @@ $("copyOther").addEventListener("click", () => {
 $("otherName").addEventListener("input", () => { $("name").value = $("otherName").value; renderAnalysisTab(); renderOther(); });
 $("name").addEventListener("input", () => { $("otherName").value = $("name").value; renderOther(); });
 
+// ---- Profilstapel ----
+const PROFILE_ROLES = ["påverkar", "inre", "egenskap", "handling"];
+function profileBar(P) {
+  const cnt = { "påverkar": 0, "inre": 0, "egenskap": 0, "handling": 0 };
+  P.all.forEach(l => { if (ROLE[l]) cnt[ROLE[l]]++; });
+  const tot = P.all.length || 1;
+  const wrap = el("div", "profile");
+  wrap.appendChild(el("span", "label", ui("profileLabel")));
+  const bar = el("div", "pbar");
+  const leg = el("div", "plegend");
+  PROFILE_ROLES.forEach((r, i) => {
+    if (!cnt[r]) return;
+    const pct = Math.round(100 * cnt[r] / tot);
+    const seg = el("span", "seg seg" + i); seg.style.flexGrow = cnt[r]; seg.title = `${ui("profileNames")[i]} ${pct} %`;
+    bar.appendChild(seg);
+    const it = el("span", "pl pl" + i); it.textContent = `${ui("profileNames")[i]} ${pct} %`;
+    leg.appendChild(it);
+  });
+  wrap.append(bar, leg);
+  return wrap;
+}
+
+// ---- Dela som bild ----
+const IMG = { bg: "#12131c", surface: "#1b1d2a", fg: "#e9eaf3", muted: "#b3b7cf", line: "#30334a", accent: "#a99cff", soft: "#272449", ok: "#6fd3a0" };
+function wrapLines(ctx, text, maxW) {
+  const words = text.split(" "), lines = [];
+  let line = "";
+  words.forEach(w => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+  if (line) lines.push(line);
+  return lines;
+}
+function fitFont(ctx, text, family, size, maxW) {
+  while (size > 20) { ctx.font = `${size}px ${family}`; if (ctx.measureText(text).width <= maxW) break; size -= 4; }
+  return size;
+}
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+async function makeShareImage() {
+  if (!current) return null;
+  const { P, S } = current;
+  try { await Promise.all(['64px "Instrument Serif"', '600 36px "Figtree"', '400 36px "Figtree"', '28px "JetBrains Mono"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const W = 1080, H = 1350, PAD = 90, CW = W - 2 * PAD;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const ctx = c.getContext("2d");
+  const SERIF = '"Instrument Serif", Georgia, serif', SANS = '"Figtree", system-ui, sans-serif', MONO = '"JetBrains Mono", monospace';
+  ctx.fillStyle = IMG.bg; ctx.fillRect(0, 0, W, H);
+  ctx.textBaseline = "alphabetic";
+  let y = 150;
+  ctx.fillStyle = IMG.muted; ctx.font = `28px ${MONO}`; ctx.fillText(ui("title").toUpperCase(), PAD, y);
+  y += 130;
+  const ns = fitFont(ctx, P.full, SERIF, 120, CW); ctx.fillStyle = IMG.fg; ctx.font = `${ns}px ${SERIF}`; ctx.fillText(P.full, PAD, y);
+  y += 110;
+  const as = fitFont(ctx, S.arch, SERIF, 88, CW); ctx.fillStyle = IMG.accent; ctx.font = `${as}px ${SERIF}`; ctx.fillText(S.arch, PAD, y);
+  y += 50;
+  // Egenskaper som piller
+  ctx.font = `600 34px ${SANS}`;
+  let x = PAD;
+  S.adjs.forEach(a => {
+    const w = ctx.measureText(a).width + 52;
+    if (x + w > W - PAD) { x = PAD; y += 78; }
+    roundRect(ctx, x, y, w, 64, 32); ctx.fillStyle = IMG.surface; ctx.fill(); ctx.strokeStyle = IMG.line; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = IMG.accent; ctx.fillText(a, x + 26, y + 44);
+    x += w + 14;
+  });
+  y += 64 + 70;
+  // Bokstavsbandet
+  const maxLen = Math.max(...P.words.map(w => w.length));
+  const gap = 12, bw = Math.min(104, Math.floor((CW - gap * (maxLen - 1)) / maxLen)), bh = Math.round(bw * 1.15), arcH = Math.round(bw * 0.7);
+  P.words.slice(0, 2).forEach(w => {
+    const cx = i => PAD + i * (bw + gap) + bw / 2, base = y + arcH;
+    const arc = (from, to, color, dashed, both) => {
+      const x1 = cx(from), x2 = cx(to), top = base - 10 - Math.min(arcH - 14, Math.abs(x2 - x1) * 0.35);
+      ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.setLineDash(dashed ? [10, 8] : []);
+      ctx.beginPath(); ctx.moveTo(x1, base - 2); ctx.quadraticCurveTo((x1 + x2) / 2, top, x2, base - 2); ctx.stroke(); ctx.setLineDash([]);
+      const head = (xa, xb) => { const dir = Math.sign(xb - xa) || 1; ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(xb, base - 2); ctx.lineTo(xb - dir * 6, base - 20); ctx.lineTo(xb - dir * 22, base - 10); ctx.closePath(); ctx.fill(); };
+      head(x1, x2); if (both) head(x2, x1);
+    };
+    w.forEach((l, i) => {
+      if (!relOrig(l)) return;
+      if (l === "A" && i > 0) arc(i, i - 1, IMG.muted, true);
+      if (l === "I") { if (i > 0) arc(i, i - 1, IMG.accent); if (i < w.length - 1) arc(i, i + 1, IMG.accent); }
+      if (l === "O" && i > 0 && i < w.length - 1) arc(i - 1, i + 1, IMG.ok, false, true);
+    });
+    w.forEach((l, i) => {
+      const bx = PAD + i * (bw + gap);
+      roundRect(ctx, bx, base, bw, bh, 16); ctx.fillStyle = VOWELS.includes(l) ? IMG.soft : IMG.surface; ctx.fill(); ctx.strokeStyle = IMG.line; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = IMG.accent; ctx.font = `${Math.round(bw * 0.68)}px ${SERIF}`; ctx.textAlign = "center"; ctx.fillText(l, bx + bw / 2, base + bh * 0.7); ctx.textAlign = "left";
+    });
+    y = base + bh + 30;
+  });
+  y += 40;
+  // Mening
+  if (S.essence) {
+    ctx.fillStyle = IMG.fg; ctx.font = `400 40px ${SANS}`;
+    wrapLines(ctx, S.essence, CW).slice(0, 4).forEach(l => { ctx.fillText(l, PAD, y); y += 56; });
+  }
+  ctx.fillStyle = IMG.muted; ctx.font = `28px ${MONO}`; ctx.fillText("rickardlundgren91.github.io/Martin", PAD, H - 80);
+  return new Promise(res => c.toBlob(b => res(b), "image/png"));
+}
+
+async function openShare() {
+  const blob = await makeShareImage();
+  if (!blob) return;
+  const name = (current.P.full || "namn").replace(/\s+/g, "-").toLowerCase() + ".png";
+  const url = URL.createObjectURL(blob);
+  const ov = el("div", "overlay"); ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", ui("shareImage"));
+  const box = el("div", "overlay-box");
+  const img = el("img"); img.src = url; img.alt = current.P.full + ": " + current.S.arch;
+  const btns = el("div", "btns");
+  const file = (() => { try { return new File([blob], name, { type: "image/png" }); } catch (e) { return null; } })();
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    const sh = el("button", "primary", ui("shareBtn")); sh.type = "button";
+    sh.addEventListener("click", () => navigator.share({ files: [file], title: ui("title") }).catch(() => {}));
+    btns.appendChild(sh);
+  }
+  const dl = el("a", "btnlink", ui("downloadBtn")); dl.href = url; dl.download = name;
+  const close = el("button", null, ui("closeBtn")); close.type = "button";
+  const shut = () => { ov.remove(); URL.revokeObjectURL(url); document.removeEventListener("keydown", esc); $("shareImage").focus(); };
+  const esc = e => { if (e.key === "Escape") shut(); };
+  close.addEventListener("click", shut);
+  ov.addEventListener("click", e => { if (e.target === ov) shut(); });
+  document.addEventListener("keydown", esc);
+  btns.append(dl, close);
+  box.append(img, el("p", "hint", ui("longPress")), btns);
+  ov.appendChild(box);
+  document.body.appendChild(ov);
+  close.focus();
+}
+$("shareImage").addEventListener("click", openShare);
+
+// ---- Blindtest ----
+const DECOYS = ["Anna", "Erik", "Maria", "Lars", "Karin", "Johan", "Eva", "Anders", "Sara", "Per", "Lena", "Mikael", "Emma", "Fredrik", "Elin", "Jonas", "Linnea", "Oskar", "Ida", "Viktor", "Sofia", "Hugo", "Maja", "Axel", "Ebba", "Filip", "Klara", "Gustav", "Alva", "Leo", "Wilma", "Nils", "Helena", "Daniel", "Agnes", "Henrik", "Tove", "Simon", "Frida", "Olle", "Ingrid", "Tobias", "Josefin", "Kevin", "Moa", "Rasmus", "Hanna", "Albin"];
+function blindParts(P) {
+  const X = ui("blindPerson"), d = D();
+  const Q = Object.assign({}, P, { n: X, full: X });
+  const S = summaryOf(Q), out = [], first = P.first;
+  if (bank(first)) out.push(traitOf(first, Q));
+  const strengths = [...new Set(P.ranked.map(l => bank(l).strength))].slice(0, 3);
+  if (strengths.length) out.push(d.strengths(X, joinList(strengths)));
+  P.ranked.filter(l => l !== first && !HIDE_L.includes(l)).slice(0, 2).forEach(l => out.push(traitOf(l, Q)));
+  const shadows = [...new Set(P.ranked.filter(l => bank(l).shadow).map(l => bank(l).shadow))].slice(0, 2);
+  if (shadows.length) out.push(ui("blindChallenge")(joinList(shadows)));
+  const lower = t => t.replace(new RegExp("([^.!?]\\s)" + X, "g"), (m, p) => p + X[0].toLowerCase() + X.slice(1));
+  let text = lower(out.join(" "));
+  // På svenska: "Personen" i första meningen, sedan "hen" så att texten inte upprepar sig.
+  if (lang === "sv") { let seen = false; text = text.replace(/(^|[.!?]\s)Personen(s?)\b/g, (m, p, gen) => { if (!seen) { seen = true; return m; } return p + "Hen" + gen; }); }
+  return { arch: S.arch, adjs: S.adjs, text };
+}
+let blind = null;
+function startBlind() {
+  const P = profile($("blindName").value);
+  const out = $("blindOut"); out.innerHTML = "";
+  if (!P) { out.appendChild(el("p", "hint", ui("emptyName"))); return; }
+  const mine = blindParts(P);
+  const pool = DECOYS.filter(nm => nm.toUpperCase() !== P.words[0].join(""));
+  const picks = [];
+  for (let tries = 0; picks.length < 2 && tries < 200; tries++) {
+    const nm = pool[Math.floor(Math.random() * pool.length)];
+    if (picks.some(p => p.name === nm)) continue;
+    const Dp = profile(nm), parts = blindParts(Dp);
+    const archs = [mine.arch, ...picks.map(p => p.parts.arch)];
+    if (tries < 150 && archs.includes(parts.arch)) continue;
+    picks.push({ name: nm, parts });
+  }
+  const cards = [{ name: P.full, parts: mine, own: true }, ...picks].sort(() => Math.random() - 0.5);
+  blind = { P, cards, chosen: null };
+  renderBlind();
+}
+function renderBlind() {
+  const out = $("blindOut"); out.innerHTML = "";
+  if (!blind) return;
+  const { cards, chosen } = blind;
+  if (chosen != null) {
+    const ok = cards[chosen].own, ownIdx = cards.findIndex(c => c.own) + 1;
+    const res = el("div", "blind-result " + (ok ? "ok" : "miss"));
+    res.append(el("p", "big", ok ? ui("blindRight") : ui("blindWrong")(cards[chosen].name, ownIdx)), el("p", "hint", ui("blindChance")));
+    const again = el("button", "primary", ui("blindAgain")); again.type = "button"; again.addEventListener("click", startBlind);
+    res.appendChild(again);
+    out.appendChild(res);
+  }
+  cards.forEach((c, i) => {
+    const card = el("div", "analysis-text blind-card" + (chosen === i ? " chosen" : "") + (chosen != null && c.own ? " own" : ""));
+    card.appendChild(el("span", "label", ui("blindCard")(i + 1) + (chosen != null ? " · " + c.name : "")));
+    card.appendChild(el("div", "arch", c.parts.arch));
+    if (c.parts.adjs.length) { const pl = el("div", "pills"); c.parts.adjs.forEach(a => pl.appendChild(el("span", "pill", a))); card.appendChild(pl); }
+    card.appendChild(el("p", null, c.parts.text));
+    if (chosen == null) {
+      const b = el("button", "primary", ui("blindPick")); b.type = "button";
+      b.addEventListener("click", () => chooseBlind(i));
+      card.appendChild(b);
+    }
+    out.appendChild(card);
+  });
+}
+function chooseBlind(i) {
+  blind.chosen = i;
+  renderBlind();
+  $("blindOut").scrollIntoView({ block: "start", behavior: "smooth" });
+  if (!fb.ready) return;
+  const P = blind.P, t = Date.now();
+  fb.votes["blindtest|" + P.all.join("") + "|" + t] = { s: "blindtest", v: blind.cards[i].own ? 1 : 0, n: P.full, t };
+  saveVotes();
+}
+function saveVotes() {
+  const keys = Object.keys(fb.votes);
+  if (keys.length > 400) keys.sort((a, b) => fb.votes[a].t - fb.votes[b].t).slice(0, keys.length - 400).forEach(k => delete fb.votes[k]);
+  const snapshot = JSON.parse(JSON.stringify(fb.votes));
+  fb.chain = fb.chain.then(() => fb.db.doc("feedback/" + fb.uid).set({ votes: snapshot })).catch(e => {
+    if (e && (e.code === "invalid_argument" || e.code === "not_granted" || e.code === "revoked")) {
+      fb.ready = false;
+      document.querySelectorAll(".vote").forEach(r => r.hidden = true);
+    }
+  });
+  if (isOwner) fb.chain.then(loadStats);
+}
+$("blindStart").addEventListener("click", startBlind);
+$("blindName").addEventListener("keydown", e => { if (e.key === "Enter") startBlind(); });
+
 function renderAll() { renderAnalysisTab(); renderCompare(); renderOther(); }
 
 // ---- Kopiera ----
@@ -1821,7 +2106,7 @@ $("copyCompare").addEventListener("click", () => {
 });
 
 // ---- Flikar ----
-const TABS = ["analys", "jamfor", "fler", "teori"];
+const TABS = ["analys", "jamfor", "blind", "fler", "teori"];
 function showTab(id) {
   if (id === "teori" && !isOwner) id = "analys";
   TABS.forEach(t => {
@@ -1832,6 +2117,7 @@ function showTab(id) {
   try { localStorage.setItem("namnets-bokstaver-flik", id); } catch (e) {}
 }
 TABS.forEach(t => $("tab-" + t).addEventListener("click", () => showTab(t)));
+$("tab-blind").addEventListener("click", () => { if (!$("blindName").value) $("blindName").value = $("name").value; });
 document.querySelector(".tabs").addEventListener("keydown", e => {
   if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
   const visible = TABS.filter(t => !$("tab-" + t).hidden);

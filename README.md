@@ -1,6 +1,6 @@
 # Namnets bokstäver
 
-En app som tolkar namn utifrån en teori om vad varje bokstav betyder. Skriv ett namn och få en sammanfattning, en analys i flera delar och en bokstav-för-bokstav-genomgång. Två namn kan också jämföras.
+En app som tolkar namn utifrån en teori om vad varje bokstav betyder. Skriv ett namn och få en sammanfattning, en analys i flera delar och en bokstav-för-bokstav-genomgång. Två namn kan också jämföras, och i ett blindtest kan man se om man känner igen sin egen beskrivning bland tre. Analysen kan delas som bild.
 
 Under fliken Fler teorier tolkas samma namn även med pythagoreisk och chaldeisk numerologi, ljudsymbolik och nordiska runor, så att man kan jämföra.
 
